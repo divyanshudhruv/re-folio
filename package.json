@@ -1,33 +1,42 @@
 {
-  "name": "re-folio",
-  "version": "0.1.0",
+  "name": "@once-ui-system/nextjs-starter",
+  "version": "1.0.1",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
+    "export": "next export",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "biome-write": "npx @biomejs/biome format --write ."
   },
   "dependencies": {
-    "@once-ui-system/core": "^1.1.5",
+    "@once-ui-system/core": "^1.0.28",
+    "@tailwindcss/postcss": "^4.1.10",
     "class-variance-authority": "^0.7.1",
+    "classnames": "^2.5.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.514.0",
-    "next": "15.3.3",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "tailwind-merge": "^3.3.1"
+    "next": "15.2.3",
+    "postcss": "^8.5.5",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "react-icons": "^5.2.1",
+    "sass": "^1.77.6",
+    "sharp": "^0.33.4",
+    "tailwind-merge": "^3.3.1",
+    "tailwindcss": "^4.1.10"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "15.3.3",
-    "tailwindcss": "^4",
+    "@biomejs/biome": "1.9.4",
+    "@types/node": "20.17.23",
+    "@types/react": "19.0.1",
+    "@types/react-dom": "19.0.2",
     "tw-animate-css": "^1.3.4",
-    "typescript": "^5"
+    "typescript": "5.8.2"
+  },
+  "overrides": {
+    "@types/react": "19.0.1",
+    "@types/react-dom": "19.0.2"
   }
 }
