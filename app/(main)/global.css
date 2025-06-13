@@ -121,51 +121,57 @@
     }
 }
 
+
+
 .text-paragraph {
-    color: #757575 !important;
+    color: #757575;
     line-height: 23px !important;
-    font-size: 14px !important;
+    font-size: 14px;
 }
 
 .text-massive-lighter {
-    color: #999999 !important;
-    font-size: 18px !important;
+    color: #999999;
+    font-size: 18px;
 }
 
 .text-massive-darker {
-    color: #999999 !important;
-    font-size: 18px !important;
+    color: #999999;
+    font-size: 18px;
 }
 
 .text-big-lightest {
-    color: #ddd !important;
-    font-size: 18px !important;
+    color: #ddd;
+    font-size: 18px;
 }
 
 .text-more-big-lighter {
-    color: #999 !important;
-    font-size: 15px !important;
+    color: #999;
+    font-size: 15px;
 }
 
 .text-big-lighter {
-    color: #999999 !important;
-    font-size: 14px !important;
+    color: #999999;
+    font-size: 14px;
 }
 
 .text-big-darker {
-    color: #757575 !important;
-    font-size: 14px !important;
+    color: #757575;
+    font-size: 14px;
 }
 
 .text-small {
-    color: #535353 !important;
-    font-size: 11.5px !important;
+    color: #535353;
+    font-size: 11.5px;
 }
 
 .text-signature {
-    color: #757575 !important;
-    font-size: 19px !important;
+    color: #757575;
+    font-size: 19px;
 }
+
+
+
+
 
 @media (max-width: 500px) {
     .responsive-container {
@@ -173,6 +179,9 @@
         grid-template-columns: 1fr !important;
         grid-auto-rows: auto !important;
     }
+
+
+
 }
 
 @media (max-width: 600px) {
@@ -196,6 +205,7 @@
 
 @media (max-width: 1225px) {
     .responsive-login-card {
-        padding: 40px !important;
+        padding: 40px ! important;
     }
+
 }
