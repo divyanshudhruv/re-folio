@@ -12,12 +12,12 @@ import {
   Flex,
   Media,
   SmartLink,
+  ThemeSwitcher,
 } from "@once-ui-system/core";
 import { useState } from "react";
 import { Inter } from "next/font/google";
 import { supabase } from "@/app/lib/supabase";
 import "./global.css";
-
 
 const inter = Inter({
   subsets: ["latin"],
@@ -130,7 +130,6 @@ function LoginCard() {
       </Text>
       <Text
         variant="body-default-xl"
-        onBackground="neutral-medium"
         className={inter.className + " text-small"}
       >
         Create a free{" "}

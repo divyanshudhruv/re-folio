@@ -60,12 +60,12 @@ export default function Intro({ id }: { id: string }) {
         >
             <Text
                 variant="heading-strong-xl"
-                onBackground="neutral-medium"
                 className={inter.className + " text-responsive-heading"}
                 style={{
                     lineHeight: "1.4",
                     fontSize: "30px",
                     letterSpacing: "-0.1px",
+                    color: "#ddd",
                 }}
             >
                 {heading}{" "}
