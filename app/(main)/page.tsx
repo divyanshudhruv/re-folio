@@ -35,6 +35,7 @@ export default function Home() {
       paddingY="l"
       horizontal="center"
       vertical="center"
+      data-theme="dark"
     >
       <Column
         maxWidth={37.5}
@@ -109,128 +110,154 @@ function LoginCard() {
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   return (
-    <Column
-      width={25}
-      fitHeight
-      border="neutral-alpha-weak"
-      borderStyle="solid"
-      radius="l"
-      padding="l"
-      gap="12"
-      paddingY="l"
-      style={{ scale: "0.8" }}
-      className="responsive-login-card"
-    >
-      <Text
-        variant="heading-strong-xl"
-        style={{ fontSize: "29px" }}
-        className={inter.className + " text-big-lightest"}
-      >
-        Sign Up
-      </Text>
-      <Text
-        variant="body-default-xl"
-        className={inter.className + " text-small"}
-      >
-        Create a free{" "}
-        <SmartLink href={"/"}>
-          <u>re-folio</u>
-        </SmartLink>{" "}
-        account
-      </Text>
-
-      <Input
-        id=""
-        placeholder="Enter your email"
-        height="m"
-        size={32}
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        style={{ marginTop: "16px", height: "52px !important" }}
-      />
-
-      <Button
-        size="l"
-        variant="primary"
-        fillWidth
-        style={{ marginTop: "-4px" }}
-        onClick={signInWithEmail}
-        disabled={!isEmailValid || emailLoading || googleLoading}
-      >
-        <Row center fillWidth fillHeight horizontal="center" vertical="center">
-          {emailLoading ? (
-            <>
-              <Spinner size="s" />
-              &nbsp;&nbsp;Sending link...
-            </>
-          ) : (
-            <>
-              <Text variant="label-default-xl">
-                {" "}
-                <i className="ri-mail-line"></i>&nbsp;&nbsp;Send me a magic link
-              </Text>
-            </>
-          )}
-        </Row>
-      </Button>
-
-      <Flex />
-
-      <Column fillWidth center>
-        <Line
-          fillWidth
-          width={25}
-          height={0.08}
-          style={{
-            marginTop: "0px",
-            position: "absolute",
-            backgroundColor: "#262626",
-          }}
-          zIndex={9}
+    <>
+      {" "}
+      <div style={{ position: "absolute", top: "16px", right: "16px" }}>
+        <ThemeSwitcher
+          direction="column"
+          padding="4"
+          gap="8"
+          background="surface"
+          border="surface"
+          radius="full"
         />
-        <Flex zIndex={10}>
-          <Text
-            variant="label-default-xl"
-            className={inter.className}
-            onBackground="neutral-weak"
-            style={{ backgroundColor: "#1A1A1A" }}
-          >
-            OR CONTINUE WITH
-          </Text>
-        </Flex>
-      </Column>
-
-      <Flex />
-
-      <Button
-        size="l"
-        variant="secondary"
-        fillWidth
-        onClick={signInWithGoogle}
-        disabled={googleLoading || emailLoading}
+      </div>
+      <Column
+        width={25}
+        fitHeight
+        border="neutral-alpha-weak"
+        borderStyle="solid"
+        radius="l"
+        padding="l"
+        gap="12"
+        paddingY="l"
+        style={{ scale: "0.8" }}
+        className="responsive-login-card"
       >
-        <Row center fillWidth fillHeight horizontal="center" vertical="center">
-          {googleLoading ? (
-            <>
-              <Spinner size="s" />
-              &nbsp;&nbsp;Redirecting...
-            </>
-          ) : (
-            <>
-              <Media
-                src="https://companieslogo.com/img/orig/google-9646e5e7.png?t=1700059830"
-                width={1.1}
-                height={1.1}
-                unoptimized
-              />
-              &nbsp;&nbsp;
-              <Text variant="heading-default-s" className={inter.className}>
-                Google
-              </Text>
-            </>
-          )}
-        </Row>
-      </Button>
-    </Column>
+        <Text
+          variant="heading-strong-xl"
+          style={{ fontSize: "29px" }}
+          className={inter.className + " text-big-lightest"}
+        >
+          Sign Up
+        </Text>
+        <Text
+          variant="body-default-xl"
+          className={inter.className + " text-small"}
+        >
+          Create a free{" "}
+          <SmartLink href={"/"}>
+            <u>re-folio</u>
+          </SmartLink>{" "}
+          account
+        </Text>
+
+        <Input
+          id=""
+          placeholder="Enter your email"
+          height="m"
+          size={32}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          style={{ marginTop: "16px", height: "52px !important" }}
+        />
+
+        <Button
+          size="l"
+          variant="primary"
+          fillWidth
+          style={{ marginTop: "-4px" }}
+          onClick={signInWithEmail}
+          disabled={!isEmailValid || emailLoading || googleLoading}
+        >
+          <Row
+            center
+            fillWidth
+            fillHeight
+            horizontal="center"
+            vertical="center"
+          >
+            {emailLoading ? (
+              <>
+                <Spinner size="s" />
+                &nbsp;&nbsp;Sending link...
+              </>
+            ) : (
+              <>
+                <Text variant="label-default-xl">
+                  {" "}
+                  <i className="ri-mail-line"></i>&nbsp;&nbsp;Send me a magic
+                  link
+                </Text>
+              </>
+            )}
+          </Row>
+        </Button>
+
+        <Flex />
+
+        <Column fillWidth center>
+          <Line
+            fillWidth
+            width={25}
+            height={0.08}
+            style={{
+              marginTop: "0px",
+              position: "absolute",
+              backgroundColor: "#262626",
+            }}
+            zIndex={9}
+          />
+          <Flex zIndex={10}>
+            <Text
+              variant="label-default-xl"
+              className={inter.className}
+              onBackground="neutral-weak"
+              style={{ backgroundColor: "#1A1A1A" }}
+            >
+              OR CONTINUE WITH
+            </Text>
+          </Flex>
+        </Column>
+
+        <Flex />
+
+        <Button
+          size="l"
+          variant="secondary"
+          fillWidth
+          onClick={signInWithGoogle}
+          disabled={googleLoading || emailLoading}
+        >
+          <Row
+            center
+            fillWidth
+            fillHeight
+            horizontal="center"
+            vertical="center"
+          >
+            {googleLoading ? (
+              <>
+                <Spinner size="s" />
+                &nbsp;&nbsp;Redirecting...
+              </>
+            ) : (
+              <>
+                <Media
+                  src="https://companieslogo.com/img/orig/google-9646e5e7.png?t=1700059830"
+                  width={1.1}
+                  height={1.1}
+                  unoptimized
+                />
+                &nbsp;&nbsp;
+                <Text variant="heading-default-s" className={inter.className}>
+                  Google
+                </Text>
+              </>
+            )}
+          </Row>
+        </Button>
+      </Column>
+    </>
   );
 }

@@ -2,7 +2,7 @@ import "@once-ui-system/core/css/styles.css";
 import "@once-ui-system/core/css/tokens.css";
 import "./global.css";
 import classNames from "classnames";
-import { Analytics } from "@vercel/analytics/next";
+import { Analytics } from "@vercel/analytics/next"
 import { baseURL, meta, font, effects } from "../../resources/once-ui.config";
 import {
   Meta,
@@ -58,39 +58,45 @@ export default function RootLayout({
           // biome-ignore lint/security/noDangerouslySetInnerHtml: <It's not dynamic nor a security issue.>
           dangerouslySetInnerHTML={{
             __html: `
-          (function() {
-            try {
-          const root = document.documentElement;
-          
-          const defaultTheme = 'light';
-          root.setAttribute('data-neutral', 'gray');
-          root.setAttribute('data-brand', 'blue');
-          root.setAttribute('data-accent', 'indigo');
-          root.setAttribute('data-solid', 'contrast');
-          root.setAttribute('data-solid-style', 'flat');
-          root.setAttribute('data-border', 'playful');
-          root.setAttribute('data-surface', 'filled');
-          root.setAttribute('data-transition', 'all');
-          root.setAttribute('data-scaling', '100');
-          root.setAttribute('data-viz-style', 'categorical');
-          
-          const resolveTheme = () => 'light';
-          
-          const resolvedTheme = resolveTheme();
-          root.setAttribute('data-theme', resolvedTheme);
-          
-          const styleKeys = ['neutral', 'brand', 'accent', 'solid', 'solid-style', 'viz-style', 'border', 'surface', 'transition', 'scaling'];
-          styleKeys.forEach(key => {
-            const value = localStorage.getItem('data-' + key);
-            if (value) {
-              root.setAttribute('data-' + key, value);
-            }
-          });
-            } catch (e) {
-          document.documentElement.setAttribute('data-theme', 'light');
-            }
-          })();
-        `,
+              (function() {
+                try {
+                  const root = document.documentElement;
+                  
+                  const defaultTheme = 'system';
+                  root.setAttribute('data-neutral', 'gray');
+                  root.setAttribute('data-brand', 'blue');
+                  root.setAttribute('data-accent', 'indigo');
+                  root.setAttribute('data-solid', 'contrast');
+                  root.setAttribute('data-solid-style', 'flat');
+                  root.setAttribute('data-border', 'playful');
+                  root.setAttribute('data-surface', 'filled');
+                  root.setAttribute('data-transition', 'all');
+                  root.setAttribute('data-scaling', '100');
+                  root.setAttribute('data-viz-style', 'categorical');
+                  
+                  const resolveTheme = (themeValue) => {
+                    if (!themeValue || themeValue === 'system') {
+                      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                    }
+                    return themeValue;
+                  };
+                  
+                  const theme = localStorage.getItem('data-theme');
+                  const resolvedTheme = resolveTheme(theme);
+                  root.setAttribute('data-theme', resolvedTheme);
+                  
+                  const styleKeys = ['neutral', 'brand', 'accent', 'solid', 'solid-style', 'viz-style', 'border', 'surface', 'transition', 'scaling'];
+                  styleKeys.forEach(key => {
+                    const value = localStorage.getItem('data-' + key);
+                    if (value) {
+                      root.setAttribute('data-' + key, value);
+                    }
+                  });
+                } catch (e) {
+                  document.documentElement.setAttribute('data-theme', 'dark');
+                }
+              })();
+            `,
           }}
         />
         <link
@@ -99,7 +105,7 @@ export default function RootLayout({
         />
       </head>
       <Providers>
-        <Analytics />
+        <Analytics/>
         <Column as="body" background="page" fillWidth margin="0" padding="0">
           {/* <Background
             position="absolute"
