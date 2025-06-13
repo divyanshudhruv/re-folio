@@ -1,4 +1,4 @@
-# Once UI for Next.js
+# Once UI for Next.js | Re-folio
 
 A design system for indie builders, startups and freelancers. Once UI combines the simplicity of low-code with the power of code: write 70% less compared to shadcn + tailwind.
 
