@@ -51,24 +51,24 @@ export default function Footer() {
         <Button
           variant="secondary"
           size="m"
-          style={{ backgroundColor: "#1c1c1c !important", padding: "5px 8px !important" }}
+          style={{ backgroundColor: "#1c1c1c", padding: "5px 8px" }}
           onClick={() => {
             window.open("https://github.com/divyanshudhruv/re-folio", "_blank");
           }}
         >
-          <Text variant="body-default-m" style={{ color: "#6B6B6B !important" }}>
+          <Text variant="body-default-m" style={{ color: "#6B6B6B" }}>
             <i className="ri-github-line"></i>
           </Text>
         </Button>{" "}
         <Button
           variant="secondary"
           size="m"
-          style={{ backgroundColor: "#1c1c1c !important", padding: "5px 5px !important" }}
+          style={{ backgroundColor: "#1c1c1c", padding: "5px 5px" }}
           onClick={() => {
             window.location.href = "https://re-folio.vercel.app/user/me";
           }}
         >
-          <Text variant="body-default-m" style={{ color: "#6B6B6B !important" }}>
+          <Text variant="body-default-m" style={{ color: "#6B6B6B" }}>
             Create <i className="ri-arrow-right-s-line"></i>
           </Text>
         </Button>
