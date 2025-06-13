@@ -88,8 +88,8 @@ const EducationCard: React.FC<EducationCardProps> = ({
       paddingX="m"
       flex={1}
       style={{
-        backgroundColor: "#1C1C1C !important",
-        minHeight: "100px !important",
+        backgroundColor: "#1C1C1C ",
+        minHeight: "100px ",
       }}
       gap="12"
       className="responsive-padding-container"

@@ -100,19 +100,13 @@ const ExperienceCard = ({
       fillWidth
       flex={1}
       style={{
-        backgroundColor: "#1C1C1C !important",
+        backgroundColor: "#1C1C1C ",
         minHeight: "100px !important",
       }}
     >
       <Row gap="12">
         <Column horizontal="center" vertical="start" fillHeight fitWidth>
-          <Media
-            width={2}
-            height={2}
-            radius="l"
-            src={src}
-            unoptimized
-          ></Media>
+          <Media width={2} height={2} radius="l" src={src} unoptimized></Media>
         </Column>
         <Column horizontal="start" vertical="start" gap="2" fillHeight>
           <Text

@@ -83,7 +83,7 @@ const ProjectCard = ({
       fillWidth
       style={{
         minHeight: "100px !important",
-        borderWidth: "0 !important",
+        borderWidth: "0",
       }}
       onClick={() => {
         if (href) {

@@ -57,7 +57,13 @@ export default function Stack({ id }: { id: string }) {
         >
           Tools & Stacks
         </Text>
-        <Grid fillWidth fitHeight gap="16" columns={2} className="responsive-container">
+        <Grid
+          fillWidth
+          fitHeight
+          gap="16"
+          columns={2}
+          className="responsive-container"
+        >
           {stacks.map((stack, index) => (
             <StackCard
               key={index}
@@ -94,7 +100,7 @@ const StackCard = ({
       style={{
         minHeight: "60px !important",
         maxHeight: "60px !important",
-        borderWidth: "0 !important",
+        borderWidth: "0 ",
       }}
       gap="12"
     >
