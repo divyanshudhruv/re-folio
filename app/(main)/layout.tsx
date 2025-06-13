@@ -1,11 +1,19 @@
-import '@once-ui-system/core/css/styles.css';
-import '@once-ui-system/core/css/tokens.css';
-import "./global.css"
+import "@once-ui-system/core/css/styles.css";
+import "@once-ui-system/core/css/tokens.css";
+import "./global.css";
 import classNames from "classnames";
 
 import { baseURL, meta, font, effects } from "../../resources/once-ui.config";
-import { Meta, Schema,  Column, Flex, opacity, SpacingToken, Background} from "@once-ui-system/core";
-import { Providers } from '../../components/Providers';
+import {
+  Meta,
+  Schema,
+  Column,
+  Flex,
+  opacity,
+  SpacingToken,
+  Background,
+} from "@once-ui-system/core";
+import { Providers } from "../../components/Providers";
 
 export async function generateMetadata() {
   return Meta.generate({
@@ -35,7 +43,7 @@ export default function RootLayout({
         font.primary.variable,
         font.secondary.variable,
         font.tertiary.variable,
-        font.code.variable,
+        font.code.variable
       )}
     >
       <Schema
@@ -91,10 +99,14 @@ export default function RootLayout({
             `,
           }}
         />
+        <link
+          href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+          rel="stylesheet"
+        />
       </head>
       <Providers>
         <Column as="body" background="page" fillWidth margin="0" padding="0">
-          <Background
+          {/* <Background
             position="absolute"
             mask={{
               x: effects.mask.x,
@@ -134,7 +146,7 @@ export default function RootLayout({
               angle: effects.lines.angle,
               color: effects.lines.color,
             }}
-          />
+          /> */}
           {children}
         </Column>
       </Providers>
