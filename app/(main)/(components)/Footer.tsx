@@ -34,8 +34,12 @@ export default function Footer() {
           <Text onBackground="neutral-weak">
             <u>re-folio</u>
           </Text>
+        </SmartLink>✨{" "} and {" "}<SmartLink href="https://once-ui.com">
+          <Text onBackground="neutral-weak">
+            <u>once-ui</u>
+          </Text>
         </SmartLink>
-        ✨
+        ⚙️
       </Text>
       <Row gap="8">
         {" "}
