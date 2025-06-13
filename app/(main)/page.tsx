@@ -14,12 +14,10 @@ import {
   SmartLink,
 } from "@once-ui-system/core";
 import { useState } from "react";
-import { Button as ButtonSC } from "@/components/ui/button";
 import { Inter } from "next/font/google";
 import { supabase } from "@/app/lib/supabase";
 import "./global.css";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+
 
 const inter = Inter({
   subsets: ["latin"],

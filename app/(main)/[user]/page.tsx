@@ -1,7 +1,6 @@
 "use client";
 
 import { Column, Flex, Spinner } from "@once-ui-system/core";
-import { Inter } from "next/font/google";
 import { motion } from "framer-motion";
 
 import Summary from "../(components)/Summary";
