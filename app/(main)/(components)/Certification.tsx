@@ -97,8 +97,8 @@ const CertificationCard: React.FC<CertificationCardProps> = ({
       paddingX="m"
       flex={1}
       style={{
-        backgroundColor: "#1C1C1C",
-        minHeight: "100px",
+        backgroundColor: "#1C1C1C !important",
+        minHeight: "100px !important",
       }}
       gap="12"
       className="responsive-padding-container"

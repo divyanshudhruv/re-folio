@@ -73,14 +73,14 @@ export default function Nav({ id }: { id: string }) {
           <Row>
             <Text
               variant="body-default-xs"
-              style={{ color: "#6B6B6B" }}
+              style={{ color: "#6B6B6B !important" }}
               className={inter.className}
             >
               {description}
             </Text>
             <Text
               variant="body-default-xs"
-              style={{ color: "#6B6B6B" }}
+              style={{ color: "#6B6B6B !important" }}
               className={inter.className}
             >
               &nbsp;•&nbsp;{location}
@@ -92,10 +92,10 @@ export default function Nav({ id }: { id: string }) {
         <Button
           variant="secondary"
           size="m"
-          style={{ backgroundColor: "#1c1c1c", padding: "5px 12px" }}
+          style={{ backgroundColor: "#1c1c1c !important", padding: "5px 12px !important" }}
           onClick={() => window.open(`mailto:${email}`, "_blank")}
         >
-          <Text variant="body-default-m" style={{ color: "#6B6B6B" }}>
+          <Text variant="body-default-m" style={{ color: "#6B6B6B !important" }}>
             <i className="ri-links-line"></i>&nbsp;E-mail
           </Text>
         </Button>

@@ -82,8 +82,8 @@ const ProjectCard = ({
       background="transparent"
       fillWidth
       style={{
-        minHeight: "100px",
-        borderWidth: "0",
+        minHeight: "100px !important",
+        borderWidth: "0 !important",
       }}
       onClick={() => {
         if (href) {
@@ -103,7 +103,7 @@ const ProjectCard = ({
             className="responsive-image"
           ></Media>
         </Flex>
-        <Column style={{ paddingInline: "5px" }}>
+        <Column style={{ paddingInline: "5px !important" }}>
           <Text className={inter.className + " text-massive-lighter"}>
             {title}
           </Text>
