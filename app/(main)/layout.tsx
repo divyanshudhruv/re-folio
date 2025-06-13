@@ -2,7 +2,7 @@ import "@once-ui-system/core/css/styles.css";
 import "@once-ui-system/core/css/tokens.css";
 import "./global.css";
 import classNames from "classnames";
-
+import { Analytics } from "@vercel/analytics/next"
 import { baseURL, meta, font, effects } from "../../resources/once-ui.config";
 import {
   Meta,
@@ -105,6 +105,7 @@ export default function RootLayout({
         />
       </head>
       <Providers>
+        <Analytics/>
         <Column as="body" background="page" fillWidth margin="0" padding="0">
           {/* <Background
             position="absolute"
