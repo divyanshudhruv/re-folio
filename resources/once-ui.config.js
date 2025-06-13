@@ -32,7 +32,7 @@ const style = {
   accent: "indigo", // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan
   solid: "contrast", // color | contrast | inverse
   solidStyle: "flat", // flat | plastic
-  border: "playful", // rounded | playful | conservative
+  border: "conservative", // rounded | playful | conservative
   surface: "filled", // filled | translucent
   transition: "all", // all | micro | macro
   scaling: "100", // 90 | 95 | 100 | 105 | 110
@@ -48,7 +48,7 @@ const dataStyle = {
   tick: {
     fill: "var(--neutral-on-background-weak)",
     fontSize: 11,
-    line: false
+    line: false,
   },
 };
 
@@ -97,31 +97,27 @@ const effects = {
 const meta = {
   home: {
     path: "/",
-    title: "Once UI for Next.js",
+    title: "Re-Folio: Transform Your Resume into a Stunning Portfolio",
     description:
-      "An open-source design system and component library for Next.js that emphasizes easy styling and accessibility in UI development.",
-    image: "/images/og/home.jpg",
-    canonical: "https://once-ui.com",
-    robots: "index,follow",
-    alternates: [{ href: "https://once-ui.com", hrefLang: "en" }],
+      "Unlock your potential with Re-Folio. Craft an unforgettable online presence that transcends the ordinary resume and portfolio. Our Next.js platform offers stunning design and seamless customization to transform your professional story. Discover how to truly stand out.",
+    image: "/images/og/home.jpg", // Ensure this path is correct and the image is compelling
+    canonical: "https://re-folio.vercel.app", // Make sure this matches your actual domain
+    robots: "index, follow",
+    alternates: [{ href: "https://re-folio.vercel.app", hrefLang: "en-US" }],
   },
-  // add more routes and reference them in page.tsx
+  // Extend with additional routes and reference them in page.tsx as needed
 };
 
 // default schema data
 const schema = {
   logo: "",
-  type: "Organization",
-  name: "Once UI",
+  type: "WebSite",
+  name: "Re-Folio",
   description: meta.home.description,
-  email: "lorant@once-ui.com",
+  email: "divyanshudhruv@proton.me",
 };
 
 // social links
-const social = {
-  twitter: "https://www.twitter.com/_onceui",
-  linkedin: "https://www.linkedin.com/company/once-ui/",
-  discord: "https://discord.com/invite/5EyAQ4eNdS",
-};
+const social = {};
 
 export { baseURL, font, style, meta, schema, social, effects, dataStyle };
