@@ -112,7 +112,7 @@ function LoginCard() {
   return (
     <>
       {" "}
-      <div style={{ position: "absolute", top: "16px", right: "16px" }}>
+      {/* <div style={{ position: "absolute", top: "16px", right: "16px" }}>
         <ThemeSwitcher
           direction="column"
           padding="4"
@@ -121,7 +121,7 @@ function LoginCard() {
           border="surface"
           radius="full"
         />
-      </div>
+      </div> */}
       <Column
         width={25}
         fitHeight
