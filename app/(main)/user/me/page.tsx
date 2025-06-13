@@ -14,6 +14,7 @@ export default function MePage() {
       paddingY="l"
       horizontal="center"
       vertical="start"
+      data-theme="dark"
     >
       <Column
         maxWidth={37.5}

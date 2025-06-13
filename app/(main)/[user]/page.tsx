@@ -45,6 +45,7 @@ export default function Home() {
       paddingY="l"
       horizontal="center"
       vertical="start"
+      data-theme="dark"
     >
       <Column
         maxWidth={37.5}
