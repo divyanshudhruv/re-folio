@@ -14,7 +14,12 @@ import { useState, useEffect } from "react";
 
 export default function Certifications({ id }: { id: string }) {
   const [certificates, setCertificates] = useState<
-    { title: string; institution: string; duration: string; description: string }[]
+    {
+      title: string;
+      institution: string;
+      duration: string;
+      description: string;
+    }[]
   >([]);
 
   useEffect(() => {
@@ -37,7 +42,6 @@ export default function Certifications({ id }: { id: string }) {
     };
 
     fetchCertificates();
-
   }, [id]);
 
   return (
