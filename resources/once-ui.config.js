@@ -118,6 +118,8 @@ const schema = {
 };
 
 // social links
-const social = {};
+const social = {
+  github: "https://github.com/divyanshudhruv/re-folio",
+};
 
 export { baseURL, font, style, meta, schema, social, effects, dataStyle };
