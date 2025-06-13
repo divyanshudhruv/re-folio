@@ -175,9 +175,9 @@
 
 @media (max-width: 500px) {
     .responsive-container {
-        display: grid;
-        grid-template-columns: 1fr;
-        grid-auto-rows: auto;
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        grid-auto-rows: auto !important;
     }
 
 
@@ -208,35 +208,4 @@
         padding: 40px ! important;
     }
 
-}
-
-.responsive-padding-container {
-    display: none !important;
-}
-.auto-resize-input {
-  all: unset;
-  font: inherit;
-  line-height: inherit;
-  display: inline-block;
-  min-width: 1ch; /* minimum width */
-  padding: 0;
-  margin: 0;
-  background: transparent;
-  border: 1px solid transparent;
-}
-
-.auto-resize-input:focus {
-  border-color: #aaa;
-  outline: none;
-}
-
-/* hidden mirror span */
-.input-mirror {
-  position: absolute;
-  visibility: hidden;
-  white-space: pre;
-  font: inherit;
-  line-height: inherit;
-  padding: 0;
-  margin: 0;
 }
