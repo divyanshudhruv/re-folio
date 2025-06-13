@@ -92,9 +92,9 @@ const StackCard = ({
       fillWidth
       flex={1}
       style={{
-        minHeight: "60px",
-        maxHeight: "60px",
-        borderWidth: "0",
+        minHeight: "60px !important",
+        maxHeight: "60px !important",
+        borderWidth: "0 !important",
       }}
       gap="12"
     >

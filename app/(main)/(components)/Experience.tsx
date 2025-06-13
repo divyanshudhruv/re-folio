@@ -100,8 +100,8 @@ const ExperienceCard = ({
       fillWidth
       flex={1}
       style={{
-        backgroundColor: "#1C1C1C",
-        minHeight: "100px",
+        backgroundColor: "#1C1C1C !important",
+        minHeight: "100px !important",
       }}
     >
       <Row gap="12">

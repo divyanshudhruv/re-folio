@@ -63,13 +63,13 @@ export default function Intro({ id }: { id: string }) {
                 onBackground="neutral-medium"
                 className={inter.className + " text-responsive-heading"}
                 style={{
-                    lineHeight: "1.4",
-                    fontSize: "30px",
-                    letterSpacing: "-0.1px",
+                    lineHeight: "1.4 !important",
+                    fontSize: "30px !important",
+                    letterSpacing: "-0.1px !important",
                 }}
             >
                 {heading}{" "}
-                <Text style={{ color: "#6B6B6B" }}>{subheading}</Text>
+                <Text style={{ color: "#6B6B6B !important" }}>{subheading}</Text>
             </Text>
             <Flex fillWidth></Flex>
             {paragraphs.map((text, index) => (
