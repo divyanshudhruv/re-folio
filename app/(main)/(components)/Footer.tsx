@@ -66,7 +66,7 @@ export default function Footer() {
           size="m"
           style={{ backgroundColor: "#1c1c1c", padding: "5px 5px" }}
           onClick={() => {
-            window.open("https://re-folio.vercel.app/user/me", "_blank");
+            window.open("https://re-folio.vercel.app/user/me", "_self");
           }}
         >
           <Text variant="body-default-m" style={{ color: "#6B6B6B" }}>
