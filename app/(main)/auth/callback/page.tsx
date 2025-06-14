@@ -14,10 +14,8 @@ export default function Page() {
 
     if (error) {
       console.error("Error fetching session:", error.message);
-      addToast({
-        variant: "danger",
-        message: "No active session found.",
-      });
+
+      push("/");
     } else if (session?.session?.user) {
       const user = session.session.user;
       const username = (user.user_metadata?.name || "default_username")

@@ -35,7 +35,6 @@ export default function NavSettings({
   const displayLocation = location || "Earth";
   const { addToast } = useToast();
 
-
   const logoutFromSupabase = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {

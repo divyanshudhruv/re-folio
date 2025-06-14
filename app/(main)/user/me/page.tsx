@@ -14,15 +14,10 @@ export default function MePage() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data, error }) => {
       if (error) {
-        addToast({
-          message: "Failed to retrieve session.",
-          variant: "danger",
-        });
+        console.error("Error fetching session:", error.message);
+        
       } else if (data.session) {
-        addToast({
-          message: `Welcome, ${data.session.user?.email || "User"}!`,
-          variant: "success",
-        });
+          console.log("Successful")
       }
     });
 
