@@ -100,7 +100,7 @@ const meta = {
     title: "Re-Folio: Transform Your Resume into a Stunning Portfolio",
     description:
       "Unlock your potential with Re-Folio. Craft an unforgettable online presence that transcends the ordinary resume and portfolio. Our Next.js platform offers stunning design and seamless customization to transform your professional story. Discover how to truly stand out.",
-    image: "/images/og/home.jpg", // Ensure this path is correct and the image is compelling
+    image: "/images/og/re-folio.png", // Ensure this path is correct and the image is compelling
     canonical: "https://re-folio.vercel.app", // Make sure this matches your actual domain
     robots: "index, follow",
     alternates: [{ href: "https://re-folio.vercel.app", hrefLang: "en-US" }],
