@@ -50,7 +50,7 @@ export default function Nav({ id }: { id: string }) {
         const { data, error } = await supabase
           .from("users")
           .select("pfp")
-          .eq("id", id)
+          .eq("username", id)
           .single();
 
         if (error) {
