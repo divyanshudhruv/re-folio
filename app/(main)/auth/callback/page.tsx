@@ -47,7 +47,7 @@ export default function Page() {
       // Insert into `users` table
       const { error: usersError } = await supabase.from("users").upsert({
         id: user.id,
-        name: username,
+        username: username,
         email,
         is_admin: false,
         created_at: new Date().toISOString(),
