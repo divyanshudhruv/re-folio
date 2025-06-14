@@ -19,6 +19,7 @@ export default function Nav({ id }: { id: string }) {
     email: string;
     location: string;
     description: string;
+    pfp?: string;
   } | null>(null);
 
   useEffect(() => {
@@ -60,7 +61,7 @@ export default function Nav({ id }: { id: string }) {
       <Row fitWidth fillHeight center gap="8">
         <Avatar
           size={2.7}
-          src="https://divyanshudhruv.vercel.app/_next/image?url=%2Fme.png&w=384&q=95"
+          src={userData.pfp || ""}
         ></Avatar>
         <Column horizontal="start" vertical="center" fitWidth fitHeight gap="1">
           <Text
