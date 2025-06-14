@@ -15,9 +15,8 @@ export default function MePage() {
     supabase.auth.getSession().then(({ data, error }) => {
       if (error) {
         console.error("Error fetching session:", error.message);
-        
       } else if (data.session) {
-          console.log("Successful")
+        console.log("Successful");
       }
     });
 
@@ -47,9 +46,9 @@ export default function MePage() {
         >
           <Spinner size="xl" />
           <Flex fillWidth height={0.1} />
-      <Text variant="label-default-s" className="text-small">
-        loading your data...
-      </Text>
+          <Text variant="label-default-s" className="text-small">
+            loading your data...
+          </Text>
         </Column>
       ) : (
         <Column
