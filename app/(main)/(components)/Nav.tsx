@@ -44,6 +44,28 @@ export default function Nav({ id }: { id: string }) {
     fetchUserData();
   }, [id]);
 
+  useEffect(() => {
+    const fetchUserPfp = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("users")
+          .select("pfp")
+          .eq("username", id)
+          .single();
+
+        if (error) {
+          console.error("Error fetching user profile picture:", error);
+        } else if (data) {
+          setUserData((prev) => (prev ? { ...prev, pfp: data.pfp } : prev));
+        }
+      } catch (err) {
+        console.error("Unexpected error:", err);
+      }
+    };
+
+    fetchUserPfp();
+  }, [id]);
+
   if (!userData) {
     return <Text></Text>;
   }
@@ -59,10 +81,7 @@ export default function Nav({ id }: { id: string }) {
       padding="s"
     >
       <Row fitWidth fillHeight center gap="8">
-        <Avatar
-          size={2.7}
-          src={userData.pfp || ""}
-        ></Avatar>
+        <Avatar size={2.7} src={userData.pfp || ""}></Avatar>
         <Column horizontal="start" vertical="center" fitWidth fitHeight gap="1">
           <Text
             variant="body-strong-s"
