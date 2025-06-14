@@ -51,6 +51,7 @@ export default function Page() {
         email,
         is_admin: false,
         created_at: new Date().toISOString(),
+        pfp: user.user_metadata?.avatar_url || "",
       });
       addToast({
         variant: "success",

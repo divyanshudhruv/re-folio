@@ -19,33 +19,38 @@ const inter = Inter({
 });
 
 export default function PersonalDetailsSetting({ id }: { id: string }) {
-const [personalDetails, setPersonalDetails] = useState({
+  const [personalDetails, setPersonalDetails] = useState({
     name: "",
     email: "",
     location: "",
     description: "",
     pfp: "",
-});
+  });
 
-useEffect(() => {
+  useEffect(() => {
     const fetchAvatarUrl = async () => {
-        try {
-            const { data, error } = await supabase.auth.getSession();
-            if (error) {
-                console.error("Error fetching session:", error);
-            } else if (data?.session?.user?.user_metadata?.avatar_url) {
-                setPersonalDetails((prev) => ({
-                    ...prev,
-                    pfp: data.session.user.user_metadata.avatar_url,
-                }));
-            }
-        } catch (err) {
-            console.error("Unexpected error:", err);
+      try {
+        const { data, error } = await supabase
+          .from("users")
+          .select("pfp")
+          .eq("id", id)
+          .single();
+
+        if (error) {
+          console.error("Error fetching avatar URL:", error);
+        } else if (data?.pfp) {
+          setPersonalDetails((prev) => ({
+            ...prev,
+            pfp: data.pfp,
+          }));
         }
+      } catch (err) {
+        console.error("Unexpected error:", err);
+      }
     };
 
     fetchAvatarUrl();
-}, []);
+  }, []);
 
   useEffect(() => {
     const fetchPersonalDetails = async () => {
