@@ -18,6 +18,7 @@ const cedarvilleCursive = Cedarville_Cursive({
 import "./../global.css";
 import { supabase } from "@/app/lib/supabase";
 import { useState, useEffect } from "react";
+import React from "react";
 
 export default function Summary({ id }: { id: string }) {
   const [socialLinks, setSocialLinks] = useState<{
@@ -25,7 +26,7 @@ export default function Summary({ id }: { id: string }) {
     twitter?: string;
     github?: string;
   }>({});
-  const [paragraphs, setParagraphs] = useState<string[]>([]);
+  const [paragraph, setParagraph] = useState<string>("");
   const [name, setName] = useState<string>("");
 
   useEffect(() => {
@@ -42,7 +43,7 @@ export default function Summary({ id }: { id: string }) {
         } else {
           if (data.summary) {
             setSocialLinks(data.summary.socialLinks || {});
-            setParagraphs(data.summary.paragraphs || []);
+            setParagraph(data.summary.paragraph || "");
             setName(data.name || "User");
           } else {
             console.error("Summary data is undefined");
@@ -65,14 +66,18 @@ export default function Summary({ id }: { id: string }) {
       >
         Summary
       </Text>
-      {paragraphs.map((paragraph, index) => (
-        <Text
-          key={index}
-          className={inter.className + " text-paragraph text-responsive-paragraph"}
-        >
-          {paragraph}
-        </Text>
-      ))}
+      <Text
+        className={
+          inter.className + " text-paragraph text-responsive-paragraph"
+        }
+      >
+        {paragraph.split("\n").map((line, index) => (
+          <React.Fragment key={index}>
+            {line}
+            <br />
+          </React.Fragment>
+        ))}
+      </Text>
       <Flex></Flex>
       <Row vertical="center" horizontal="space-between" fillWidth fitHeight>
         <SocialLinks links={socialLinks} />

@@ -1,6 +1,6 @@
 "use client";
 
-import { Column, Flex, Spinner } from "@once-ui-system/core";
+import { Column, Flex, Spinner, Text } from "@once-ui-system/core";
 import { motion } from "framer-motion";
 
 import Summary from "../(components)/Summary";
@@ -55,6 +55,10 @@ export default function Home() {
         style={{ display: loading ? "flex" : "none" }}
       >
         <Spinner size="xl" />
+        <Flex fillWidth height={0.1} />
+        <Text variant="label-default-s" className="text-small">
+          loading {username}...
+        </Text>
       </Column>
       {!loadingIntermediate && (
         <Column

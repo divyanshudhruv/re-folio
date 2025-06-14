@@ -5,8 +5,14 @@ const nextConfig = {
     silenceDeprecations: ["legacy-js-api"],
   },
   images: {
-    domains: ["divyanshudhruv.vercel.app"], // Add the domain hosting the image
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**", // Allow all domains
+      },
+    ],
     path: "/_next/image", // Specify the path for Next.js image optimization
+    formats: ["image/avif", "image/webp"], // Allow all supported image formats
   },
   async rewrites() {
     return [
