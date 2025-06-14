@@ -27,6 +27,7 @@ export default function Footer() {
       paddingX="s"
       horizontal="space-between"
       vertical="center"
+      marginTop="20"
     >
       <Text
         className={inter.className + " text-big-darker"}
@@ -65,7 +66,7 @@ export default function Footer() {
           size="m"
           style={{ backgroundColor: "#1c1c1c", padding: "5px 5px" }}
           onClick={() => {
-            window.location.href = "https://re-folio.vercel.app/user/me";
+            window.open("https://re-folio.vercel.app/user/me", "_blank");
           }}
         >
           <Text variant="body-default-m" style={{ color: "#6B6B6B" }}>
