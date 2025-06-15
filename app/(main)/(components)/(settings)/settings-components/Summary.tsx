@@ -137,6 +137,7 @@ export default function SummarySetting({ id }: { id: string }) {
         <Flex height={1}></Flex>
         <Row fillWidth horizontal="end" vertical="center" gap="8">
           <Button
+            data-theme="light"
             variant="primary"
             onClick={async () => {
               setLoading(true);

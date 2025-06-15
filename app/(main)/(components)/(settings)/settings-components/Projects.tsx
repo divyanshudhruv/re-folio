@@ -301,7 +301,8 @@ export default function ProjectSetting({ id }: { id: string }) {
             Add
           </Button>
           <Button
-            variant="primary"
+            variant="primary"                        data-theme="light"
+
             onClick={async () => {
               handleSave();
             }}

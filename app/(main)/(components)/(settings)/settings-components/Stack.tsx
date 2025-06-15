@@ -219,7 +219,8 @@ export default function StackSetting({ id }: { id: string }) {
             Add
           </Button>
           <Button
-            variant="primary"
+            variant="primary"                        data-theme="light"
+
             onClick={async () => {
               setLoading(true);
               await handleSave();
