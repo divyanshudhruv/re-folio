@@ -58,6 +58,7 @@ export default function Summary({ id }: { id: string }) {
   }, [id]);
 
   return (
+    <>
     <Column fillWidth fitHeight paddingX="s" gap="16">
       <Text
         variant="heading-strong-xs"
@@ -86,6 +87,7 @@ export default function Summary({ id }: { id: string }) {
         </Text>
       </Row>
     </Column>
+     <Flex fillWidth height={2.5}></Flex></>
   );
 }
 

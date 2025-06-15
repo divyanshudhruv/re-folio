@@ -45,32 +45,41 @@ export default function Certifications({ id }: { id: string }) {
   }, [id]);
 
   return (
-    <Column fillWidth fitHeight paddingX="s" gap="16">
-      <Text
-        variant="heading-strong-xs"
-        onBackground="neutral-medium"
-        className={inter.className}
-      >
-        Certifications
-      </Text>
-      <Grid
-        fillWidth
-        fitHeight
-        gap="16"
-        columns={2}
-        className="responsive-container"
-      >
-        {certificates.map((certification, index) => (
-          <CertificationCard
-            key={index}
-            title={certification.title}
-            institution={certification.institution}
-            duration={certification.duration}
-            description={certification.description}
-          />
-        ))}
-      </Grid>
-    </Column>
+    certificates.length > 0 &&
+    certificates.some(
+      (cert) =>
+        cert.title && cert.institution && cert.duration && cert.description
+    ) && (
+      <>
+        <Column fillWidth fitHeight paddingX="s" gap="16">
+          <Text
+            variant="heading-strong-xs"
+            onBackground="neutral-medium"
+            className={inter.className}
+          >
+            Certifications
+          </Text>
+          <Grid
+            fillWidth
+            fitHeight
+            gap="16"
+            columns={2}
+            className="responsive-container"
+          >
+            {certificates.map((certification, index) => (
+              <CertificationCard
+                key={index}
+                title={certification.title}
+                institution={certification.institution}
+                duration={certification.duration}
+                description={certification.description}
+              />
+            ))}
+          </Grid>
+        </Column>
+        <Flex fillWidth height={2.5}></Flex>
+      </>
+    )
   );
 }
 

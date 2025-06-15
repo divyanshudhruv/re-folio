@@ -77,34 +77,15 @@ export default function Home() {
             {[
               <Nav id={username} />,
               <Space />,
-
               <Intro id={username} />,
-              <Space />,
-
               <Experience id={username} />,
-              <Space />,
-
               <Projects id={username} />,
-              <Space />,
-
               <Education id={username} />,
-              <Space />,
-
               <Stack id={username} />,
-              <Space />,
-
               <Certifications id={username} />,
-              <Space />,
-
               <Awards id={username} />,
-              <Space />,
-
               <Language id={username} />,
-              <Space />,
-
               <Summary id={username} />,
-              <Space />,
-
               <Footer />,
             ].map((Component, index) => (
               <React.Fragment key={index}>

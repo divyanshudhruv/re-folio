@@ -47,34 +47,43 @@ export default function Experience({ id }: { id: string }) {
 
     fetchExperiences();
   }, [id]);
-
   return (
-    <Column fillWidth fitHeight paddingX="s" gap="16">
-      <Text
-        variant="heading-strong-xs"
-        onBackground="neutral-medium"
-        className={inter.className}
-      >
-        Experience
-      </Text>
-      <Grid
-        fillWidth
-        fitHeight
-        gap="16"
-        columns={2}
-        className="responsive-container"
-      >
-        {experiences.map((experience, index) => (
-          <ExperienceCard
-            src={experience.src}
-            key={index}
-            title={experience.title}
-            company={experience.company}
-            duration={experience.duration}
-          />
-        ))}
-      </Grid>
-    </Column>
+    <>
+      {experiences.length > 0 &&
+        experiences.some(
+          (experience) =>
+            experience.title && experience.company && experience.duration && experience.src
+        ) && (
+          <>
+          <Column fillWidth fitHeight paddingX="s" gap="16">
+            <Text
+              variant="heading-strong-xs"
+              onBackground="neutral-medium"
+              className={inter.className}
+            >
+              Experience
+            </Text>
+            <Grid
+              fillWidth
+              fitHeight
+              gap="16"
+              columns={2}
+              className="responsive-container"
+            >
+              {experiences.map((experience, index) => (
+                <ExperienceCard
+                  src={experience.src}
+                  key={index}
+                  title={experience.title}
+                  company={experience.company}
+                  duration={experience.duration}
+                />
+              ))}
+            </Grid>
+          </Column>
+           <Flex fillWidth height={2.5}></Flex></>
+        )}
+    </>
   );
 }
 

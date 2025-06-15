@@ -15,7 +15,12 @@ import "./../global.css";
 
 export default function Education({ id }: { id: string }) {
   const [educationData, setEducationData] = useState<
-    { title: string; institution: string; duration: string; description: string }[]
+    {
+      title: string;
+      institution: string;
+      duration: string;
+      description: string;
+    }[]
   >([]);
 
   useEffect(() => {
@@ -41,26 +46,38 @@ export default function Education({ id }: { id: string }) {
   }, [id]);
 
   return (
-    <Column fillWidth fitHeight paddingX="s" gap="16">
-      <Text
-        variant="heading-strong-xs"
-        onBackground="neutral-medium"
-        className={inter.className}
-      >
-        Education
-      </Text>
-      <Grid fillWidth fitHeight gap="16" columns={1}>
-        {educationData.map((education, index) => (
-          <EducationCard
-            key={index}
-            title={education.title}
-            institution={education.institution}
-            duration={education.duration}
-            description={education.description}
-          />
-        ))}
-      </Grid>
-    </Column>
+    educationData.length > 0 &&
+    educationData.some(
+      (education) =>
+        education.title &&
+        education.institution &&
+        education.duration &&
+        education.description
+    ) && (
+      <>
+        <Column fillWidth fitHeight paddingX="s" gap="16">
+          <Text
+            variant="heading-strong-xs"
+            onBackground="neutral-medium"
+            className={inter.className}
+          >
+            Education
+          </Text>
+          <Grid fillWidth fitHeight gap="16" columns={1}>
+            {educationData.map((education, index) => (
+              <EducationCard
+                key={index}
+                title={education.title}
+                institution={education.institution}
+                duration={education.duration}
+                description={education.description}
+              />
+            ))}
+          </Grid>
+        </Column>
+        <Flex fillWidth height={2.5}></Flex>
+      </>
+    )
   );
 }
 

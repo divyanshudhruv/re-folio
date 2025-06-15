@@ -120,6 +120,7 @@ export default function Nav({ id }: { id: string }) {
           </Text>
         </Button>
       </Row>
+      
     </Row>
   );
 }

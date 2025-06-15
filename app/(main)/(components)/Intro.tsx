@@ -47,52 +47,62 @@ export default function Intro({ id }: { id: string }) {
     }
 
     const { tags, heading, subheading, paragraphs } = introData;
-
     return (
-        <Column
-            fillWidth
-            fitHeight
-            horizontal="space-between"
-            vertical="center"
-            paddingBottom="m"
-            paddingX="s"
-            gap="12"
-        >
-            <Text
-                variant="heading-strong-xl"
-                className={inter.className + " text-responsive-heading"}
-                style={{
-                    lineHeight: "1.4",
-                    fontSize: "30px",
-                    letterSpacing: "-0.1px",
-                    color: "#ddd",
-                }}
+        introData &&
+        Object.keys(introData).some(
+            (key) =>
+                key !== "id" &&
+                (key === "tags" || key === "heading" || key === "subheading" || key === "paragraphs") &&
+                introData[key] &&
+                introData[key].length > 0
+        ) && (
+            <>
+            <Column
+                fillWidth
+                fitHeight
+                horizontal="space-between"
+                vertical="center"
+                paddingBottom="m"
+                paddingX="s"
+                gap="12"
             >
-                {heading}{" "}
-                <Text style={{ color: "#6B6B6B" }}>{subheading}</Text>
-            </Text>
-            <Flex fillWidth></Flex>
-            {paragraphs.map((text, index) => (
                 <Text
-                    key={index}
-                    className={inter.className + " text-paragraph text-responsive-paragraph"}
+                    variant="heading-strong-xl"
+                    className={inter.className + " text-responsive-heading"}
+                    style={{
+                        lineHeight: "1.4",
+                        fontSize: "30px",
+                        letterSpacing: "-0.1px",
+                        color: "#ddd",
+                    }}
                 >
-                    {text}
+                    {heading}{" "}
+                    <Text style={{ color: "#6B6B6B" }}>{subheading}</Text>
                 </Text>
-            ))}
-            <Flex></Flex>
-            <Row gap="8">
-                {tags.map((tag, index) => (
-                    <Kbd
+                <Flex fillWidth></Flex>
+                {paragraphs.map((text, index) => (
+                    <Text
                         key={index}
-                        background="neutral-alpha-weak"
-                        border="neutral-alpha-weak"
-                        onBackground="neutral-weak"
+                        className={inter.className + " text-paragraph text-responsive-paragraph"}
                     >
-                        {tag}
-                    </Kbd>
+                        {text}
+                    </Text>
                 ))}
-            </Row>
-        </Column>
+                <Flex></Flex>
+                <Row gap="8">
+                    {tags.map((tag, index) => (
+                        <Kbd
+                            key={index}
+                            background="neutral-alpha-weak"
+                            border="neutral-alpha-weak"
+                            onBackground="neutral-weak"
+                        >
+                            {tag}
+                        </Kbd>
+                    ))}
+                </Row>
+            </Column>
+             <Flex fillWidth height={2.5}></Flex></>
+        )
     );
 }
