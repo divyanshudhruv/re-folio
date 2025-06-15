@@ -207,7 +207,7 @@ export default function ProjectSetting({ id }: { id: string }) {
 
   return (
     <Column fillWidth fitHeight gap="16">
-      <HeadingLink as="h6" id="intro">
+      <HeadingLink as="h6" id="projects">
         <Text
           variant="heading-strong-xs"
           onBackground="neutral-medium"

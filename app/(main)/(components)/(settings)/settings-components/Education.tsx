@@ -109,7 +109,7 @@ export default function EducationSetting({ id }: { id: string }) {
 
   return (
     <Column fillWidth fitHeight gap="16">
-      <HeadingLink as="h6" id="intro">
+      <HeadingLink as="h6" id="education">
         <Text
           variant="heading-strong-xs"
           onBackground="neutral-medium"

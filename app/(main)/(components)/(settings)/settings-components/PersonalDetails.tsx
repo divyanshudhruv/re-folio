@@ -180,7 +180,7 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
 
   return (
     <Column fillWidth fitHeight gap="16">
-      <HeadingLink as="h6" id="intro">
+      <HeadingLink as="h6" id="personal-details">
         <Text
           variant="heading-strong-xs"
           onBackground="neutral-medium"
