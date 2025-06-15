@@ -1,6 +1,6 @@
 "use client";
 
-import { Column, Text, Flex, Button } from "@once-ui-system/core";
+import { Column, Text, Flex, Button, Row } from "@once-ui-system/core";
 import { Inter } from "next/font/google";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
@@ -138,7 +138,9 @@ export default function IntroSettings() {
             <Space />,
             <SummarySetting id={id} />,
             <Space />,
-            <Footer />,
+            <Row fillWidth style={{ minWidth: "100%", width: "100%" }} center>
+              <Footer />
+            </Row>,
           ].map((Component, index) => (
             <motion.div
               key={index}
