@@ -24,6 +24,7 @@ export default function AwardsSetting({ id }: { id: string }) {
     { id: 1, name: "", year: new Date().getFullYear(), description: "" },
   ]);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -165,9 +166,17 @@ export default function AwardsSetting({ id }: { id: string }) {
           >
             Add
           </Button>
-          <Button variant="primary" onClick={handleSave}>
-            Save
-          </Button>
+            <Button
+            variant="primary"
+            onClick={async () => {
+              setLoading(true);
+              await handleSave();
+              setLoading(false);
+            }}
+            disabled={loading}
+            >
+            {loading ? "Saving..." : "Save"}
+            </Button>
         </Row>
       </Column>
     </Column>

@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 export default function MePage() {
   const { addToast } = useToast();
   const [loading, setLoading] = useState(true);
+  const [id, setId] = useState<string | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data, error }) => {
@@ -17,6 +18,7 @@ export default function MePage() {
         console.error("Error fetching session:", error.message);
       } else if (data.session) {
         console.log("Successful");
+        setId(data.session.user.id);
       }
     });
 
@@ -64,7 +66,10 @@ export default function MePage() {
             transition={{ duration: 0.5, delay: 0.1 }}
             style={{ width: "100%" }}
           >
-            <NavSettings name="" descriptionWords={""} location="" /> <Space />
+            {id ? (
+            <NavSettings id={id} />
+            ) : null}
+            <Space />
           </motion.div>
           <IntroSettings />
         </Column>

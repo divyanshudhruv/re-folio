@@ -54,7 +54,7 @@ export default function Footer() {
           size="m"
           style={{ backgroundColor: "#1c1c1c", padding: "5px 8px" }}
           onClick={() => {
-            window.open("https://github.com/divyanshudhruv/re-folio", "_blank");
+            // window.open("https://github.com/divyanshudhruv/re-folio", "_blank");
           }}
         >
           <Text variant="body-default-m" style={{ color: "#6B6B6B" }}>

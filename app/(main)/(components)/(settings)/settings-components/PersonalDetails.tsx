@@ -6,6 +6,7 @@ import {
   Flex,
   Row,
   Button,
+  MediaUpload,
 } from "@once-ui-system/core";
 import { Inter } from "next/font/google";
 import { useState, useEffect } from "react";
@@ -26,6 +27,27 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
     description: "",
     pfp: "",
   });
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (session) {
+          setSessionId(session.user.id);
+        } else {
+          console.log("No active session found.");
+        }
+      } catch (err) {
+        console.error("Unexpected error:", err);
+      }
+    };
+
+    fetchSession();
+  }, []); // Runs only once when the component mounts
 
   useEffect(() => {
     const fetchAvatarUrl = async () => {
@@ -72,9 +94,10 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
     };
 
     fetchPersonalDetails();
-  }, [id]); // Added dependency array to prevent repetitive rendering
+  }, [id]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    setLoading(true);
     console.log(personalDetails);
     const updatePersonalDetails = async () => {
       try {
@@ -93,11 +116,66 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
       }
     };
 
-    updatePersonalDetails();
+    const updateAvatarUrl = async () => {
+      try {
+        const { error: userError } = await supabase
+          .from("users")
+          .update({ pfp: personalDetails.pfp })
+          .eq("id", id);
+
+        if (userError) {
+          console.error("Error updating avatar URL in users table:", userError);
+        } else {
+          console.log("Avatar URL updated successfully in users table");
+        }
+      } catch (err) {
+        console.error("Unexpected error:", err);
+      }
+    };
+
+    await updatePersonalDetails();
+    await updateAvatarUrl();
+    setLoading(false);
   };
 
   const handleChange = (field: string, value: string) => {
     setPersonalDetails((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleFileUpload = async (userId: string, file: File) => {
+    if (!userId) return;
+
+    try {
+      const fileName = `avatars/${sessionId}/${userId}-${Date.now()}-${
+        file.name
+      }`;
+      const { data, error } = await supabase.storage
+        .from("attachments") // Replace with your bucket name
+        .upload(fileName, file);
+
+      if (error) {
+        throw new Error(
+          `Failed to upload file for user ${userId}: ${error.message}`
+        );
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from("attachments") // Replace with your bucket name
+        .getPublicUrl(data.path);
+
+      if (!publicUrlData.publicUrl) {
+        throw new Error(`Failed to get public URL for user ${userId}`);
+      }
+
+      setPersonalDetails((prev) => ({
+        ...prev,
+        pfp: publicUrlData.publicUrl,
+      }));
+
+      console.log("File uploaded successfully:", publicUrlData.publicUrl);
+    } catch (error: any) {
+      console.error(error);
+    }
   };
 
   return (
@@ -129,26 +207,52 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
           onChange={(e) => handleChange("email", e.target.value)}
         />
         <Input
-          radius="bottom"
+          radius="none"
           id="input-3"
           label="Expertise"
           height="s"
           value={personalDetails.description}
           onChange={(e) => handleChange("description", e.target.value)}
         />
-        <Flex height={1}></Flex>
-        <Row fillWidth horizontal="space-between" vertical="center">
-          <Input
-            id="input-4"
-            label="Where are you from?"
-            height="s"
-            style={{ maxWidth: "200px" }}
-            value={personalDetails.location}
-            onChange={(e) => handleChange("location", e.target.value)}
-          />
-          <Button variant="primary" onClick={handleSave}>
-            Save
-          </Button>
+        <Row fillWidth horizontal="space-between" vertical="start">
+          <MediaUpload
+            style={{
+              borderTopLeftRadius: "0px",
+              borderTopRightRadius: "0px",
+              backgroundColor: "#262626",
+              zIndex: "990",
+            }}
+            className="text-big-lightest"
+            emptyState={"Avatar"}
+            width={7}
+            minWidth={7}
+            height={7}
+            minHeight={7}
+            onChange={(event) => {
+              const file = (event.target as HTMLInputElement).files?.[0];
+              if (file) handleFileUpload(id, file);
+            }}
+            initialPreviewImage={personalDetails.pfp}
+          ></MediaUpload>
+          <Column fillWidth horizontal="end" gap="16">
+            <Input
+              id="input-4"
+              label="Where are you from?"
+              radius="bottom-right"
+              height="s"
+              value={personalDetails.location}
+              onChange={(e) => handleChange("location", e.target.value)}
+            />
+            <Button
+              variant="primary"
+              onClick={async () => {
+                handleSave();
+              }}
+              disabled={loading}
+            >
+              {loading ? "Saving..." : "Save"}
+            </Button>
+          </Column>
         </Row>
       </Column>
     </Column>
