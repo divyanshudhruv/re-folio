@@ -165,7 +165,7 @@ export default function ExperienceSetting({ id }: { id: string }) {
 
   return (
     <Column fillWidth fitHeight gap="16">
-      <HeadingLink as="h6" id="intro">
+      <HeadingLink as="h6" id="experience">
         <Text
           variant="heading-strong-xs"
           onBackground="neutral-medium"
