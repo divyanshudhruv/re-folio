@@ -119,14 +119,14 @@ export default function NavSettings({ id }: { id: string }) {
         </Column>
       </Row>
       <Row fitWidth fillHeight center gap="8">
-        {/* <Button
+        <Button
           variant="secondary"
           size="m"
           style={{ backgroundColor: "#1c1c1c", padding: "5px 7px" }}
           onClick={logoutFromSupabase}
         >
           <Text variant="body-default-m" style={{ color: "#6B6B6B" }}>
-            <i className="ri-logout-box-r-line"></i>&nbsp;Logout
+            <i className="ri-logout-box-r-line"></i>
           </Text>
         </Button>
         <Button
@@ -140,8 +140,8 @@ export default function NavSettings({ id }: { id: string }) {
           <Text variant="body-default-m" style={{ color: "#6B6B6B" }}>
             <i className="ri-window-line"></i>&nbsp;Preview
           </Text>
-        </Button> */}
-        <UserMenu
+        </Button>
+        {/* <UserMenu
           name=""
           placement="right-start"
           avatarProps={{
@@ -180,7 +180,7 @@ export default function NavSettings({ id }: { id: string }) {
               </Option>
             </Column>
           }
-        />
+        /> */}
       </Row>
     </Row>
   );
