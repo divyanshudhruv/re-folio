@@ -7,6 +7,9 @@ import {
   Avatar,
   Button,
   useToast,
+  UserMenu,
+  Option,
+  Icon,
 } from "@once-ui-system/core";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -28,6 +31,7 @@ export default function NavSettings({ id }: { id: string }) {
     pfp?: string;
   } | null>(null);
   const { addToast } = useToast();
+  const [username, setUsername] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -35,7 +39,7 @@ export default function NavSettings({ id }: { id: string }) {
       try {
         const { data, error } = await supabase
           .from("refolio_sections")
-          .select("nav")
+          .select("nav,username")
           .eq("id", id)
           .single();
 
@@ -43,6 +47,7 @@ export default function NavSettings({ id }: { id: string }) {
           console.error("Error fetching user data:", error);
         } else {
           setUserData(data.nav);
+          setUsername(data.username);
         }
       } catch (err) {
         console.error("Unexpected error:", err);
@@ -66,7 +71,8 @@ export default function NavSettings({ id }: { id: string }) {
           <Text onBackground="neutral-medium">Logged out successfully</Text>
         ),
       });
-      router.push("/"); // Redirect to home page after logout
+
+      window.location.href = "/";
     }
   };
 
@@ -113,25 +119,68 @@ export default function NavSettings({ id }: { id: string }) {
         </Column>
       </Row>
       <Row fitWidth fillHeight center gap="8">
-        <Button
+        {/* <Button
           variant="secondary"
           size="m"
           style={{ backgroundColor: "#1c1c1c", padding: "5px 7px" }}
           onClick={logoutFromSupabase}
         >
           <Text variant="body-default-m" style={{ color: "#6B6B6B" }}>
-            <i className="ri-logout-box-r-line"></i>
+            <i className="ri-logout-box-r-line"></i>&nbsp;Logout
           </Text>
         </Button>
         <Button
           variant="secondary"
           size="m"
           style={{ backgroundColor: "#1c1c1c", padding: "5px 12px" }}
+          onClick={() =>
+            window.open(`https://re-folio.vercel.app/@${username}`, "blank")
+          }
         >
           <Text variant="body-default-m" style={{ color: "#6B6B6B" }}>
-            <i className="ri-window-line"></i>&nbsp;Dashboard
+            <i className="ri-window-line"></i>&nbsp;Preview
           </Text>
-        </Button>
+        </Button> */}
+        <UserMenu
+          name=""
+          placement="right-start"
+          avatarProps={{
+            src: "https://i.pinimg.com/originals/6f/e1/02/6fe10243d59a6ee869d3da7302285245.png",
+          }}
+          dropdown={
+            <Column gap="4" padding="4" minWidth={10}>
+              <Option
+                value=""
+                hasPrefix={
+                  <Icon size="xs" onBackground="neutral-weak" name="logout" />
+                }
+                onClick={logoutFromSupabase}
+              >
+                {" "}
+                <Text variant="body-default-s" style={{ color: "#6B6B6B" }}>
+                  <i className="ri-logout-box-r-line"></i>&nbsp;Logout
+                </Text>{" "}
+              </Option>
+              <Option
+                value=""
+                hasPrefix={
+                  <Icon size="xs" onBackground="neutral-weak" name="preview" />
+                }
+                onClick={() =>
+                  window.open(
+                    `https://re-folio.vercel.app/@${username}`,
+                    "blank"
+                  )
+                }
+              >
+                {" "}
+                <Text variant="body-default-s" style={{ color: "#6B6B6B" }}>
+                  <i className="ri-window-line"></i>&nbsp;Preview
+                </Text>
+              </Option>
+            </Column>
+          }
+        />
       </Row>
     </Row>
   );
