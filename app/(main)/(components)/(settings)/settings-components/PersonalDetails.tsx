@@ -244,7 +244,7 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
               onChange={(e) => handleChange("location", e.target.value)}
             />
             <Button
-              variant="primary"                        data-theme="light"
+              variant="primary"                        data-theme="dark"
 
               onClick={async () => {
                 handleSave();

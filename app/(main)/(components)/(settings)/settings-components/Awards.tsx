@@ -166,9 +166,8 @@ export default function AwardsSetting({ id }: { id: string }) {
           >
             Add
           </Button>
-            <Button
-                                    data-theme="light"
-
+          <Button
+            data-theme="dark"
             variant="primary"
             onClick={async () => {
               setLoading(true);
@@ -176,9 +175,9 @@ export default function AwardsSetting({ id }: { id: string }) {
               setLoading(false);
             }}
             disabled={loading}
-            >
+          >
             {loading ? "Saving..." : "Save"}
-            </Button>
+          </Button>
         </Row>
       </Column>
     </Column>

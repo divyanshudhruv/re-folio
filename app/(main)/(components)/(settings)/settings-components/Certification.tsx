@@ -178,7 +178,7 @@ export default function CertificationSetting({ id }: { id: string }) {
                     </Button>
                     <Button 
                         variant="primary" 
-                        data-theme="light"
+                        data-theme="dark"
                         onClick={async () => {
                             setLoading(true);
                             await handleSave();
