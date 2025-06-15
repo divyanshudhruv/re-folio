@@ -124,6 +124,7 @@ export default function NavSettings({ id }: { id: string }) {
           size="m"
           style={{ backgroundColor: "#1c1c1c", padding: "5px 7px" }}
           onClick={logoutFromSupabase}
+          data-theme="dark"
         >
           <Text variant="body-default-m" style={{ color: "#6B6B6B" }}>
             <i className="ri-logout-box-r-line"></i>

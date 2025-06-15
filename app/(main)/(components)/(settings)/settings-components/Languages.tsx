@@ -176,8 +176,8 @@ export default function LanguageSetting({ id }: { id: string }) {
             Add
           </Button>
           <Button
-            variant="primary"                        data-theme="light"
-
+            variant="primary"
+            data-theme="dark"
             onClick={async () => {
               setLoading(true);
               await handleSave();
