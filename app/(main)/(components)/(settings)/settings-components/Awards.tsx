@@ -167,6 +167,8 @@ export default function AwardsSetting({ id }: { id: string }) {
             Add
           </Button>
             <Button
+                                    data-theme="light"
+
             variant="primary"
             onClick={async () => {
               setLoading(true);

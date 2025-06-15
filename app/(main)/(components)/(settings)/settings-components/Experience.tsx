@@ -268,7 +268,8 @@ export default function ExperienceSetting({ id }: { id: string }) {
             onClick={async () => {
               handleSave();
             }}
-            disabled={loading}
+            disabled={loading}                        data-theme="light"
+
             >
             {loading ? "Saving..." : "Save"}
             </Button>

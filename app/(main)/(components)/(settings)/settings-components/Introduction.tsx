@@ -138,7 +138,8 @@ export default function Introduction({ id }: { id: string }) {
         <Flex height={1}></Flex>
         <Row fillWidth horizontal="end" vertical="center">
             <Button
-            variant="primary"
+            variant="primary"                        data-theme="light"
+
             onClick={async () => {
               handleSave();
             }}

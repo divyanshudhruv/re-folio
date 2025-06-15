@@ -187,7 +187,8 @@ export default function EducationSetting({ id }: { id: string }) {
             variant="primary"
             onClick={async () => {
               handleSave();
-            }}
+            }}                        data-theme="light"
+
             disabled={loading}
           >
             {loading ? "Saving..." : "Save"}
