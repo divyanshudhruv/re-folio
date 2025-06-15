@@ -133,12 +133,42 @@ export default function ProjectSetting({ id }: { id: string }) {
     }
   }
 
-  function handleSave() {
+  async function handleSave() {
     setLoading(true);
-    const jsonOutput = projects.map(({ id, ...project }) => ({
-      ...project,
-      href: project.href ? `https://${project.href}` : "",
-    }));
+    const jsonOutput = await Promise.all(
+      projects.map(async ({ id, ...project }) => {
+        let formattedHref = project.href;
+
+        if (formattedHref && !formattedHref.startsWith("https://")) {
+          try {
+            const { data, error } = await supabase
+              .from("refolio_sections")
+              .select("projects")
+              .eq("id", id)
+              .single();
+
+            if (error) {
+              console.error("Error checking href in database:", error);
+            } else if (data && data.projects) {
+              const existingProject = data.projects.find(
+                (dbProject: any) => dbProject.href === project.href
+              );
+
+              if (!existingProject) {
+                formattedHref = `https://${formattedHref}`;
+              }
+            }
+          } catch (err) {
+            console.error("Unexpected error:", err);
+          }
+        }
+
+        return {
+          ...project,
+          href: formattedHref,
+        };
+      })
+    );
     const saveProjects = async () => {
       try {
         const { error } = await supabase
@@ -270,15 +300,15 @@ export default function ProjectSetting({ id }: { id: string }) {
           >
             Add
           </Button>
-            <Button
+          <Button
             variant="primary"
             onClick={async () => {
               handleSave();
             }}
             disabled={loading}
-            >
+          >
             {loading ? "Saving..." : "Save"}
-            </Button>
+          </Button>
         </Row>
       </Column>
     </Column>
