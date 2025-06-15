@@ -9,32 +9,48 @@ import {
   useToast,
 } from "@once-ui-system/core";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Inter } from "next/font/google";
+import { supabase } from "@/app/lib/supabase";
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
-import { supabase } from "@/app/lib/supabase";
-// Removed unused Router import
 
-export default function NavSettings({
-  name = "User",
-  descriptionWords = "Someone",
-  location = "Earth",
-  avatar = "",
-}: {
-  name?: string;
-  descriptionWords?: string;
-  location?: string;
-  avatar?: string;
-}) {
-  const displayName = name || "User";
-  const displayDescriptionWords = descriptionWords || "Someone";
-  const displayLocation = location || "Earth";
+export default function NavSettings({ id }: { id: string }) {
+  const [userData, setUserData] = useState<{
+    name: string;
+    description: string;
+    location: string;
+    pfp?: string;
+  } | null>(null);
   const { addToast } = useToast();
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("refolio_sections")
+          .select("nav")
+          .eq("id", id)
+          .single();
+
+        if (error) {
+          console.error("Error fetching user data:", error);
+        } else {
+          setUserData(data.nav);
+        }
+      } catch (err) {
+        console.error("Unexpected error:", err);
+      }
+    };
+
+    fetchUserData();
+  }, [id]);
 
   const logoutFromSupabase = async () => {
     const { error } = await supabase.auth.signOut();
@@ -50,10 +66,16 @@ export default function NavSettings({
           <Text onBackground="neutral-medium">Logged out successfully</Text>
         ),
       });
-      const router = useRouter();
       router.push("/"); // Redirect to home page after logout
     }
   };
+
+  if (!userData) {
+    return <Text></Text>;
+  }
+
+  const { name, description, location, pfp } = userData;
+
   return (
     <Row
       fillWidth
@@ -63,30 +85,29 @@ export default function NavSettings({
       padding="s"
     >
       <Row fitWidth fillHeight center gap="8">
-        <Avatar size={2.7} src={avatar}></Avatar>
+        <Avatar size={2.7} src={pfp || ""}></Avatar>
         <Column horizontal="start" vertical="center" fitWidth fitHeight gap="1">
           <Text
             variant="body-strong-s"
             onBackground="neutral-medium"
             className={inter.className}
           >
-            {displayName}
+            {name}
           </Text>
           <Row>
-            {" "}
             <Text
               variant="body-default-xs"
               style={{ color: "#6B6B6B" }}
               className={inter.className}
             >
-              {displayDescriptionWords}
+              {description}
             </Text>
             <Text
               variant="body-default-xs"
               style={{ color: "#6B6B6B" }}
               className={inter.className}
             >
-              &nbsp;•&nbsp;{displayLocation}
+              &nbsp;•&nbsp;{location}
             </Text>
           </Row>
         </Column>

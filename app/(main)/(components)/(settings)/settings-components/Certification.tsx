@@ -24,6 +24,7 @@ export default function CertificationSetting({ id }: { id: string }) {
         { id: 1, title: "", institution: "", duration: "", description: "" },
     ]);
     const [sessionId, setSessionId] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         async function fetchData() {
@@ -175,8 +176,16 @@ export default function CertificationSetting({ id }: { id: string }) {
                     >
                         Add
                     </Button>
-                    <Button variant="primary" onClick={handleSave}>
-                        Save
+                    <Button 
+                        variant="primary" 
+                        onClick={async () => {
+                            setLoading(true);
+                            await handleSave();
+                            setLoading(false);
+                        }} 
+                        disabled={loading}
+                    >
+                        {loading ? "Saving..." : "Save"}
                     </Button>
                 </Row>
             </Column>

@@ -32,6 +32,7 @@ export default function ProjectSetting({ id }: { id: string }) {
     }[]
   >([]);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -133,6 +134,7 @@ export default function ProjectSetting({ id }: { id: string }) {
   }
 
   function handleSave() {
+    setLoading(true);
     const jsonOutput = projects.map(({ id, ...project }) => ({
       ...project,
       href: project.href ? `https://${project.href}` : "",
@@ -151,6 +153,8 @@ export default function ProjectSetting({ id }: { id: string }) {
         }
       } catch (err) {
         console.error("Unexpected error:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -266,9 +270,15 @@ export default function ProjectSetting({ id }: { id: string }) {
           >
             Add
           </Button>
-          <Button variant="primary" onClick={handleSave}>
-            Save
-          </Button>
+            <Button
+            variant="primary"
+            onClick={async () => {
+              handleSave();
+            }}
+            disabled={loading}
+            >
+            {loading ? "Saving..." : "Save"}
+            </Button>
         </Row>
       </Column>
     </Column>

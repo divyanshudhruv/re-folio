@@ -28,6 +28,7 @@ export default function Introduction({ id }: { id: string }) {
     paragraphs: [],
     subheading: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const fetchIntroductionDetails = useCallback(async () => {
     try {
@@ -48,6 +49,7 @@ export default function Introduction({ id }: { id: string }) {
   }, [id]);
 
   const handleSave = useCallback(() => {
+    setLoading(true);
     console.log(introductionDetails);
     const updateIntroductionDetails = async () => {
       try {
@@ -63,6 +65,8 @@ export default function Introduction({ id }: { id: string }) {
         }
       } catch (err) {
         console.error("Unexpected error:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -133,9 +137,15 @@ export default function Introduction({ id }: { id: string }) {
         />
         <Flex height={1}></Flex>
         <Row fillWidth horizontal="end" vertical="center">
-          <Button variant="primary" onClick={handleSave}>
-            Save
-          </Button>
+            <Button
+            variant="primary"
+            onClick={async () => {
+              handleSave();
+            }}
+            disabled={loading}
+            >
+            {loading ? "Saving..." : "Save"}
+            </Button>
         </Row>
       </Column>
     </Column>

@@ -28,6 +28,7 @@ export default function EducationSetting({ id }: { id: string }) {
       institution: string;
     }[]
   >([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchEducationDetails = useCallback(async () => {
     try {
@@ -57,27 +58,26 @@ export default function EducationSetting({ id }: { id: string }) {
     fetchEducationDetails();
   }, [fetchEducationDetails]);
 
-  const handleSave = useCallback(() => {
+  const handleSave = async () => {
+    setLoading(true);
     console.log(educationDetails);
-    const updateEducationDetails = async () => {
-      try {
-        const { error } = await supabase
-          .from("refolio_sections")
-          .update({ education: educationDetails })
-          .eq("id", id);
+    try {
+      const { error } = await supabase
+        .from("refolio_sections")
+        .update({ education: educationDetails })
+        .eq("id", id);
 
-        if (error) {
-          console.error("Error updating education details:", error);
-        } else {
-          console.log("Education details updated successfully");
-        }
-      } catch (err) {
-        console.error("Unexpected error:", err);
+      if (error) {
+        console.error("Error updating education details:", error);
+      } else {
+        console.log("Education details updated successfully");
       }
-    };
-
-    updateEducationDetails();
-  }, [educationDetails, id]);
+    } catch (err) {
+      console.error("Unexpected error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleChange = useCallback(
     (id: number, field: string, value: string | string[]) => {
@@ -183,8 +183,14 @@ export default function EducationSetting({ id }: { id: string }) {
           >
             Add
           </Button>
-          <Button variant="primary" onClick={handleSave}>
-            Save
+          <Button
+            variant="primary"
+            onClick={async () => {
+              handleSave();
+            }}
+            disabled={loading}
+          >
+            {loading ? "Saving..." : "Save"}
           </Button>
         </Row>
       </Column>

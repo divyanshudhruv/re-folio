@@ -25,6 +25,7 @@ export default function StackSetting({ id }: { id: string }) {
     { id: 1, src: "", name: "", description: "" },
   ]);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function fetchSession() {
@@ -110,8 +111,6 @@ export default function StackSetting({ id }: { id: string }) {
       if (error) {
         throw new Error(`Failed to save stacks: ${error.message}`);
       }
-
-      addToast({ variant: "success", message: "Stacks saved successfully!" });
     } catch (error: any) {
       console.error(error);
       addToast({
@@ -219,8 +218,16 @@ export default function StackSetting({ id }: { id: string }) {
           >
             Add
           </Button>
-          <Button variant="primary" onClick={handleSave}>
-            Save
+          <Button
+            variant="primary"
+            onClick={async () => {
+              setLoading(true);
+              await handleSave();
+              setLoading(false);
+            }}
+            disabled={loading}
+          >
+            {loading ? "Saving..." : "Save"}
           </Button>
         </Row>
       </Column>

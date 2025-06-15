@@ -32,6 +32,7 @@ export default function ExperienceSetting({ id }: { id: string }) {
     }[]
   >([]);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchExperiences = async () => {
@@ -124,7 +125,8 @@ export default function ExperienceSetting({ id }: { id: string }) {
     }
   }
 
-  function handleSave() {
+  async function handleSave() {
+    setLoading(true);
     const jsonOutput = experiences.map(({ id, ...experience }) => experience);
     const saveExperiences = async () => {
       try {
@@ -143,7 +145,8 @@ export default function ExperienceSetting({ id }: { id: string }) {
       }
     };
 
-    saveExperiences();
+    await saveExperiences();
+    setLoading(false);
   }
 
   function updateExperience(id: number, field: string, value: any) {
@@ -260,9 +263,15 @@ export default function ExperienceSetting({ id }: { id: string }) {
           >
             Add
           </Button>
-          <Button variant="primary" onClick={handleSave}>
-            Save
-          </Button>
+            <Button
+            variant="primary"
+            onClick={async () => {
+              handleSave();
+            }}
+            disabled={loading}
+            >
+            {loading ? "Saving..." : "Save"}
+            </Button>
         </Row>
       </Column>
     </Column>
