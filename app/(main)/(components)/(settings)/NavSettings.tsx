@@ -18,6 +18,7 @@ const inter = Inter({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 import { supabase } from "@/app/lib/supabase";
+// Removed unused Router import
 
 export default function NavSettings({
   name = "User",
@@ -49,6 +50,8 @@ export default function NavSettings({
           <Text onBackground="neutral-medium">Logged out successfully</Text>
         ),
       });
+      const router = useRouter();
+      router.push("/"); // Redirect to home page after logout
     }
   };
   return (
