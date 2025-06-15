@@ -44,6 +44,17 @@ export default function Page() {
         );
       }
 
+      // Check if user already exists in `users` table
+      const { data: existingUser, error: fetchError } = await supabase
+        .from("users")
+        .select("id")
+        .eq("id", user.id)
+        .single();
+
+      if (fetchError) {
+        console.error("Error fetching user:", fetchError.message);
+      }
+
       // Insert into `users` table
       const { error: usersError } = await supabase.from("users").upsert({
         id: user.id,
@@ -51,8 +62,9 @@ export default function Page() {
         email,
         is_admin: false,
         created_at: new Date().toISOString(),
-        pfp: user.user_metadata?.avatar_url || "",
+        pfp: existingUser ? undefined : user.user_metadata?.avatar_url || "",
       });
+
       addToast({
         variant: "success",
         message: "Callback successful!",
