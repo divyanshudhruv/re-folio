@@ -49,31 +49,34 @@ export default function Stack({ id }: { id: string }) {
 
   return (
     <>
-      <Column fillWidth fitHeight paddingX="s" gap="16">
-        <Text
-          variant="heading-strong-xs"
-          onBackground="neutral-medium"
-          className={inter.className}
-        >
-          Tools & Stacks
-        </Text>
-        <Grid
-          fillWidth
-          fitHeight
-          gap="16"
-          columns={2}
-          className="responsive-container"
-        >
-          {stacks.map((stack, index) => (
-            <StackCard
-              key={index}
-              name={stack.name}
-              description={stack.description}
-              src={stack.src}
-            />
-          ))}
-        </Grid>
-      </Column>
+      {stacks.length > 0 && stacks.some(stack => stack.name && stack.description && stack.src) && (
+       <> <Column fillWidth fitHeight paddingX="s" gap="16">
+          <Text
+            variant="heading-strong-xs"
+            onBackground="neutral-medium"
+            className={inter.className}
+          >
+            Tools & Stacks
+          </Text>
+          <Grid
+            fillWidth
+            fitHeight
+            gap="16"
+            columns={2}
+            className="responsive-container"
+          >
+            {stacks.map((stack, index) => (
+              <StackCard
+                key={index}
+                name={stack.name}
+                description={stack.description}
+                src={stack.src}
+              />
+            ))}
+          </Grid>
+        </Column>
+         <Flex fillWidth height={2.5}></Flex></>
+      )}
     </>
   );
 }

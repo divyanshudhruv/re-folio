@@ -6,6 +6,7 @@ import {
   Grid,
   Row,
   Kbd,
+  Flex,
 } from "@once-ui-system/core";
 import { Inter } from "next/font/google";
 const inter = Inter({
@@ -44,26 +45,30 @@ export default function Languages({ id }: { id: string }) {
 
     fetchLanguages();
   }, [id]);
-
   return (
-    <Column fillWidth fitHeight paddingX="s" gap="16">
-      <Text
-        variant="heading-strong-xs"
-        onBackground="neutral-medium"
-        className={inter.className}
-      >
-        Languages Spoken
-      </Text>
-      <Grid fillWidth fitHeight columns={1}>
-        {languages.map((language, index) => (
-          <LanguageCard
-            key={index}
-            name={language.name}
-            proficiency={language.proficiency}
-          />
-        ))}
-      </Grid>
-    </Column>
+    languages.length > 0 &&
+    languages.some(language => language.name && language.proficiency) && (
+          <>
+<Column fillWidth fitHeight paddingX="s" gap="16">
+        <Text
+          variant="heading-strong-xs"
+          onBackground="neutral-medium"
+          className={inter.className}
+        >
+          Languages Spoken
+        </Text>
+        <Grid fillWidth fitHeight columns={1}>
+          {languages.map((language, index) => (
+            <LanguageCard
+              key={index}
+              name={language.name}
+              proficiency={language.proficiency}
+            />
+          ))}
+        </Grid>
+      </Column>
+       <Flex fillWidth height={2.5}></Flex></>
+    )
   );
 }
 

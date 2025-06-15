@@ -38,29 +38,36 @@ export default function Projects({ id }: { id: string }) {
     fetchData();
   }, [id]);
   const projects = projectsData;
-
   return (
-    <Column fillWidth fitHeight paddingX="s" gap="16">
-      <Text
-        variant="heading-strong-xs"
-        onBackground="neutral-medium"
-        className={inter.className}
-      >
-        Projects
-      </Text>
+    <>
+      {projects.length > 0 && projects.some(project => 
+        Object.keys(project).some((key) => key !== "id" && project[key as keyof typeof project])
+      ) && (
+        <>
+        <Column fillWidth fitHeight paddingX="s" gap="16">
+          <Text
+            variant="heading-strong-xs"
+            onBackground="neutral-medium"
+            className={inter.className}
+          >
+            Projects
+          </Text>
 
-      <Grid columns={2} fillWidth gap="16" className="responsive-container">
-        {projects.map((project, index) => (
-          <ProjectCard
-            key={index}
-            src={project.src}
-            title={project.title}
-            description={project.description}
-            href={project.href}
-          />
-        ))}
-      </Grid>
-    </Column>
+          <Grid columns={2} fillWidth gap="16" className="responsive-container">
+            {projects.map((project, index) => (
+              <ProjectCard
+                key={index}
+                src={project.src}
+                title={project.title}
+                description={project.description}
+                href={project.href}
+              />
+            ))}
+          </Grid>
+        </Column>
+         <Flex fillWidth height={2.5}></Flex></>
+      )}
+    </>
   );
 }
 

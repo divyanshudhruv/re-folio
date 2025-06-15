@@ -41,25 +41,37 @@ export default function Awards({ id }: { id: string }) {
   }, [id]);
 
   return (
-    <Column fillWidth fitHeight paddingX="s" gap="16">
-      <Text
-        variant="heading-strong-xs"
-        onBackground="neutral-medium"
-        className={inter.className}
-      >
-        Awards
-      </Text>
-      <Grid fillWidth fitHeight columns={1}>
-        {awardsData.map((award, index) => (
-          <AwardsCard
-            key={index}
-            name={award.name}
-            description={award.description}
-            year={award.year}
-          />
-        ))}
-      </Grid>
-    </Column>
+    <>
+      {awardsData.length > 0 &&
+        awardsData.some(
+          (award) =>
+            award.name &&
+            award.description &&
+            (award.year || award.year === undefined)
+        ) && (
+          <>
+          <Column fillWidth fitHeight paddingX="s" gap="16">
+            <Text
+              variant="heading-strong-xs"
+              onBackground="neutral-medium"
+              className={inter.className}
+            >
+              Awards
+            </Text>
+            <Grid fillWidth fitHeight columns={1}>
+              {awardsData.map((award, index) => (
+                <AwardsCard
+                  key={index}
+                  name={award.name}
+                  description={award.description}
+                  year={award.year}
+                />
+              ))}
+            </Grid>
+          </Column>
+           <Flex fillWidth height={2.5}></Flex></>
+        )}
+    </>
   );
 }
 
