@@ -67,7 +67,7 @@ export default function Home() {
           vertical="center"
           fillWidth
           fillHeight
-          className="body-container"
+          className="body-container responsive-landing-main-container"
           style={{ maxWidth: "1000px" }}
         >
           <LoginText />
@@ -293,7 +293,7 @@ function LoginCard() {
 
 function LoginText() {
   return (
-    <Column maxWidth={32}>
+    <Column maxWidth={32} className="responsive-landing-container">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

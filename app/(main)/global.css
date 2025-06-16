@@ -209,3 +209,17 @@
     }
 
 }
+
+
+@media (max-width: 870px) {
+    .responsive-landing-container {
+        display: none !important;
+    }
+
+    .responsive-landing-main-container {
+        flex-direction: column !important;
+        min-width: 100vw;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+}
