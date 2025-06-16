@@ -12,9 +12,8 @@ import {
   Flex,
   Media,
   SmartLink,
-  ThemeSwitcher,
 } from "@once-ui-system/core";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Inter } from "next/font/google";
 import { supabase } from "@/app/lib/supabase";
 import "./global.css";
@@ -25,33 +24,56 @@ const inter = Inter({
   display: "swap",
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
+import { motion } from "framer-motion";
 
 export default function Home() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000); // Spinner will display for 1 seconds
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <Column
       fillWidth
       style={{ minHeight: "100vh", backgroundColor: "#1A1A1A" }}
       background="surface"
       paddingY="l"
+      paddingX="l"
       horizontal="center"
       vertical="center"
       data-theme="dark"
     >
-      <Column
-        maxWidth={37.5}
-        center
-        fillWidth
-        fitHeight
-        className="body-container"
-      >
-        <LoginCard />
-        <Text className="text-small" style={{ marginTop: "-30px" }}>
-          sign up for early access
-        </Text>{" "}
-        <Text className="text-small" style={{ marginTop: "-0px" }}>
-          already logged in? <SmartLink href="/user/me">click here</SmartLink>
-        </Text>
-      </Column>
+      {loading ? (
+        <Column
+          maxWidth={37.5}
+          center
+          fillWidth
+          fillHeight
+          style={{ display: "flex" }}
+        >
+          <Spinner size="xl" />
+          <Flex fillWidth height={0.1} />
+          <Text variant="label-default-s" className="text-small">
+            starting...
+          </Text>
+        </Column>
+      ) : (
+        <Row
+          horizontal="space-between"
+          vertical="center"
+          fillWidth
+          fillHeight
+          className="body-container"
+          style={{ maxWidth: "1000px" }}
+        >
+          <LoginText />
+          <LoginCard />
+        </Row>
+      )}
     </Column>
   );
 }
@@ -71,8 +93,8 @@ function LoginCard() {
           redirectTo: `${window.location.origin}/auth/callback`,
           queryParams: {
             prompt: "select_account",
-            access_type: "offline", // Optional, for refresh token
-            response_type: "code", // ✅ Ensures code is sent in search params
+            access_type: "offline",
+            response_type: "code",
           },
         },
       });
@@ -110,154 +132,212 @@ function LoginCard() {
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   return (
-    <>
-      {" "}
-      {/* <div style={{ position: "absolute", top: "16px", right: "16px" }}>
-        <ThemeSwitcher
-          direction="column"
-          padding="4"
-          gap="8"
-          background="surface"
-          border="surface"
-          radius="full"
-        />
-      </div> */}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <Column
-        width={25}
+        maxWidth={37.5}
+        center
+        fillWidth
         fitHeight
-        border="neutral-alpha-weak"
-        borderStyle="solid"
-        radius="l"
-        padding="l"
-        gap="12"
-        paddingY="l"
-        style={{ scale: "0.8" }}
-        className="responsive-login-card"
+        className="body-container"
+      >
+        <Column
+          width={25}
+          fitHeight
+          border="neutral-alpha-weak"
+          borderStyle="solid"
+          radius="l"
+          padding="l"
+          gap="12"
+          paddingY="l"
+          style={{ scale: "0.8" }}
+          className="responsive-login-card"
+        >
+          <Text
+            variant="heading-strong-xl"
+            style={{ fontSize: "29px" }}
+            className={inter.className + " text-big-lightest"}
+          >
+            Sign Up
+          </Text>
+          <Text
+            variant="body-default-xl"
+            className={inter.className + " text-small"}
+          >
+            Create a free{" "}
+            <SmartLink href={"/"}>
+              <u>re-folio</u>
+            </SmartLink>{" "}
+            account
+          </Text>
+
+          <Input
+            id=""
+            placeholder="Enter your email"
+            height="m"
+            size={32}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            style={{ marginTop: "16px", height: "52px !important" }}
+          />
+
+          <Button
+            size="l"
+            variant="primary"
+            fillWidth
+            style={{ marginTop: "-4px" }}
+            onClick={signInWithEmail}
+            disabled={!isEmailValid || emailLoading || googleLoading}
+          >
+            <Row
+              center
+              fillWidth
+              fillHeight
+              horizontal="center"
+              vertical="center"
+            >
+              {emailLoading ? (
+                <>
+                  <Spinner size="s" />
+                  &nbsp;&nbsp;Sending link...
+                </>
+              ) : (
+                <>
+                  <Text variant="label-default-xl">
+                    {" "}
+                    <i className="ri-mail-line"></i>&nbsp;&nbsp;Send me a magic
+                    link
+                  </Text>
+                </>
+              )}
+            </Row>
+          </Button>
+
+          <Flex />
+
+          <Column fillWidth center>
+            <Line
+              fillWidth
+              width={25}
+              height={0.08}
+              style={{
+                marginTop: "0px",
+                position: "absolute",
+                backgroundColor: "#262626",
+              }}
+              zIndex={9}
+            />
+            <Flex zIndex={10}>
+              <Text
+                variant="label-default-xl"
+                className={inter.className}
+                onBackground="neutral-weak"
+                style={{ backgroundColor: "#1A1A1A" }}
+              >
+                OR CONTINUE WITH
+              </Text>
+            </Flex>
+          </Column>
+
+          <Flex />
+
+          <Button
+            size="l"
+            variant="secondary"
+            fillWidth
+            onClick={signInWithGoogle}
+            disabled={googleLoading || emailLoading}
+          >
+            <Row
+              center
+              fillWidth
+              fillHeight
+              horizontal="center"
+              vertical="center"
+            >
+              {googleLoading ? (
+                <>
+                  <Spinner size="s" />
+                  &nbsp;&nbsp;Redirecting...
+                </>
+              ) : (
+                <>
+                  <Media
+                    src="https://companieslogo.com/img/orig/google-9646e5e7.png?t=1700059830"
+                    width={1.1}
+                    height={1.1}
+                    unoptimized
+                  />
+                  &nbsp;&nbsp;
+                  <Text variant="heading-default-s" className={inter.className}>
+                    Google
+                  </Text>
+                </>
+              )}
+            </Row>
+          </Button>
+        </Column>
+        <Text className="text-small" style={{ marginTop: "-30px" }}>
+          sign up for early access
+        </Text>{" "}
+        <Text className="text-small" style={{ marginTop: "-0px" }}>
+          already logged in? <SmartLink href="/user/me">click here</SmartLink>
+        </Text>
+      </Column>
+    </motion.div>
+  );
+}
+
+function LoginText() {
+  return (
+    <Column maxWidth={32}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
       >
         <Text
           variant="heading-strong-xl"
-          style={{ fontSize: "29px" }}
-          className={inter.className + " text-big-lightest"}
+          onBackground="neutral-medium"
+          className={inter.className + " text-responsive-heading"}
+          style={{
+            lineHeight: "1.4",
+            fontSize: "40px",
+            letterSpacing: "-0.1px",
+          }}
         >
-          Sign Up
+          Welcome to Re-Folio, your resume{" "}
+          <Text style={{ color: "#6B6B6B" }}>in a portfolio style.</Text>
         </Text>
-        <Text
-          variant="body-default-xl"
-          className={inter.className + " text-small"}
+      </motion.div>
+      <Flex fillWidth height={1}></Flex>
+      <Flex maxWidth={26}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
         >
-          Create a free{" "}
-          <SmartLink href={"/"}>
-            <u>re-folio</u>
-          </SmartLink>{" "}
-          account
-        </Text>
-
-        <Input
-          id=""
-          placeholder="Enter your email"
-          height="m"
-          size={32}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{ marginTop: "16px", height: "52px !important" }}
-        />
-
-        <Button
-          size="l"
-          variant="primary"
-          fillWidth
-          style={{ marginTop: "-4px" }}
-          onClick={signInWithEmail}
-          disabled={!isEmailValid || emailLoading || googleLoading}
-        >
-          <Row
-            center
-            fillWidth
-            fillHeight
-            horizontal="center"
-            vertical="center"
+          <Text
+            style={{ fontSize: "15px" }}
+            className={
+              inter.className + " text-paragraph text-responsive-paragraph"
+            }
           >
-            {emailLoading ? (
-              <>
-                <Spinner size="s" />
-                &nbsp;&nbsp;Sending link...
-              </>
-            ) : (
-              <>
-                <Text variant="label-default-xl">
-                  {" "}
-                  <i className="ri-mail-line"></i>&nbsp;&nbsp;Send me a magic
-                  link
-                </Text>
-              </>
-            )}
-          </Row>
-        </Button>
-
-        <Flex />
-
-        <Column fillWidth center>
-          <Line
-            fillWidth
-            width={25}
-            height={0.08}
-            style={{
-              marginTop: "0px",
-              position: "absolute",
-              backgroundColor: "#262626",
-            }}
-            zIndex={9}
-          />
-          <Flex zIndex={10}>
-            <Text
-              variant="label-default-xl"
-              className={inter.className}
-              onBackground="neutral-weak"
-              style={{ backgroundColor: "#1A1A1A" }}
-            >
-              OR CONTINUE WITH
-            </Text>
-          </Flex>
-        </Column>
-
-        <Flex />
-
-        <Button
-          size="l"
-          variant="secondary"
-          fillWidth
-          onClick={signInWithGoogle}
-          disabled={googleLoading || emailLoading}
-        >
-          <Row
-            center
-            fillWidth
-            fillHeight
-            horizontal="center"
-            vertical="center"
-          >
-            {googleLoading ? (
-              <>
-                <Spinner size="s" />
-                &nbsp;&nbsp;Redirecting...
-              </>
-            ) : (
-              <>
-                <Media
-                  src="https://companieslogo.com/img/orig/google-9646e5e7.png?t=1700059830"
-                  width={1.1}
-                  height={1.1}
-                  unoptimized
-                />
-                &nbsp;&nbsp;
-                <Text variant="heading-default-s" className={inter.className}>
-                  Google
-                </Text>
-              </>
-            )}
-          </Row>
-        </Button>
-      </Column>
-    </>
+            Re-Folio is designed to help you create stunning resume portfolios
+            with ease. Whether you're a designer, developer, or creative
+            professional, showcase your skills and stand out with our platform's
+            tools.
+            <br />
+            <br />
+            Join our community and start building your resume portfolio today.
+            Share your feedback, contribute to the project, and help us shape
+            the future of Re-Folio!
+          </Text>
+        </motion.div>
+      </Flex>
+    </Column>
   );
 }
