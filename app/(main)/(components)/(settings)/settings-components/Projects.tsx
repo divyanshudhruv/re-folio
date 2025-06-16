@@ -136,7 +136,7 @@ export default function ProjectSetting({ id }: { id: string }) {
   async function handleSave() {
     setLoading(true);
     const jsonOutput = await Promise.all(
-      projects.map(async ({ id, ...project }) => {
+      projects.map(async ({ id, src, ...project }) => {
         let formattedHref = project.href;
 
         if (formattedHref && !formattedHref.startsWith("https://")) {
@@ -163,12 +163,19 @@ export default function ProjectSetting({ id }: { id: string }) {
           }
         }
 
+        // Set default image src if no file is uploaded
+        const updatedSrc =
+          src ||
+          "https://farmshopmfg.com/wp-content/uploads/2023/03/placeholder.png";
+
         return {
           ...project,
+          src: updatedSrc,
           href: formattedHref,
         };
       })
     );
+
     const saveProjects = async () => {
       try {
         const { error } = await supabase
@@ -301,8 +308,8 @@ export default function ProjectSetting({ id }: { id: string }) {
             Add
           </Button>
           <Button
-            variant="primary"                        data-theme="dark"
-
+            variant="primary"
+            data-theme="dark"
             onClick={async () => {
               handleSave();
             }}
