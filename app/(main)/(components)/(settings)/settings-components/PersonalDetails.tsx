@@ -239,6 +239,11 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
   }, [id]);
 
   async function changeUsername(username_args: string) {
+
+    if (username_args.includes(" ")) {
+      setUsernameMessages("Username should not contain spaces. Please choose another.");
+      return;
+    }
     try {
       const { data: existingUsernames, error: fetchError } = await supabase
         .from("refolio_sections")
@@ -345,6 +350,7 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
           value={username}
           onChange={(e) => {
             const value = e.target.value;
+            
             setUsername(value);
           }}
           // hasSuffix={
