@@ -7,6 +7,7 @@ import {
   Row,
   Button,
   MediaUpload,
+  Kbd,
 } from "@once-ui-system/core";
 import { Inter } from "next/font/google";
 import { useState, useEffect } from "react";
@@ -29,6 +30,32 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
   });
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [username, setUsername] = useState<string>("");
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("refolio_sections")
+          .select("username")
+          .eq("id", id)
+          .single();
+
+        if (error) {
+          console.error("Error fetching username:", error);
+        } else if (data?.username) {
+          setUsername(data.username);
+        }
+      } catch (err) {
+        console.error("Unexpected error:", err);
+      }
+    };
+
+    fetchUsername();
+  }, [id]);
+
+  const [username_conditions, setUsernameConditions] = useState<boolean>(true);
+  const [username_messages, setUsernameMessages] = useState<string>("");
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -135,6 +162,7 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
 
     await updatePersonalDetails();
     await updateAvatarUrl();
+    await changeUsername(username);
     setLoading(false);
   };
 
@@ -178,6 +206,115 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
     }
   };
 
+  useEffect(() => {
+    const checkUsernameChangePermission = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("refolio_sections")
+          .select("can_change_username")
+          .eq("id", id)
+          .single();
+
+        if (error) {
+          console.error("Error fetching can_change_username:", error);
+          return;
+        }
+
+        if (data?.can_change_username) {
+          setUsernameMessages(
+            "You can change your username only once. Please choose wisely."
+          );
+        } else {
+          setUsernameConditions(false);
+          setUsernameMessages(
+            "Username change is disabled. You can only change it once."
+          );
+        }
+      } catch (err) {
+        console.error("Unexpected error:", err);
+      }
+    };
+
+    checkUsernameChangePermission();
+  }, [id]);
+
+  async function changeUsername(username_args: string) {
+    try {
+      const { data: existingUsernames, error: fetchError } = await supabase
+        .from("refolio_sections")
+        .select("username, id");
+
+      if (fetchError) {
+        console.error("Error fetching existing usernames:", fetchError);
+        return;
+      }
+
+      const isUsernameTaken = existingUsernames.some(
+        (user) => user.username === username_args && user.id !== id
+      );
+
+      if (isUsernameTaken) {
+        setUsernameMessages(
+          "This username is already taken. Please choose another."
+        );
+        return;
+      }
+
+      const currentUser = existingUsernames.find((user) => user.id === id);
+
+      if (currentUser?.username === username_args) {
+        const { error: updateError } = await supabase
+          .from("refolio_sections")
+          .update({
+            username: username_args.replaceAll(" ", "-"),
+          })
+          .eq("id", id);
+
+        if (updateError) {
+          console.error("Error updating username:", updateError);
+        } else {
+          console.log("Username updated successfully");
+          setUsernameMessages("Current username is already set.");
+        }
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("refolio_sections")
+        .select("can_change_username")
+        .eq("id", id)
+        .single();
+
+      if (error) {
+        console.error("Error fetching can_change_username:", error);
+        return;
+      }
+
+      if (data?.can_change_username) {
+        const { error: updateError } = await supabase
+          .from("refolio_sections")
+          .update({
+            username: username_args.replaceAll(" ", "-"),
+            can_change_username: false,
+          })
+          .eq("id", id);
+
+        if (updateError) {
+          console.error("Error updating username:", updateError);
+        } else {
+          console.log("Username updated successfully");
+          setUsernameMessages("Username updated successfully!");
+        }
+      } else {
+        setUsernameMessages(
+          "You can only change your username once. Please contact support."
+        );
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
+    }
+  }
+
   return (
     <Column fillWidth fitHeight gap="16">
       <HeadingLink as="h6" id="personal-details">
@@ -197,6 +334,26 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
           height="s"
           value={personalDetails.name}
           onChange={(e) => handleChange("name", e.target.value)}
+        />
+        <Flex></Flex>
+        <Input
+          radius="none"
+          id="input-1"
+          placeholder="username"
+          height="m"
+          hasPrefix={<i className="ri-at-line text-big-darker"></i>}
+          value={username}
+          onChange={(e) => {
+            const value = e.target.value;
+            setUsername(value);
+          }}
+          // hasSuffix={
+          //   <Flex minWidth={5}>
+          //     <Kbd className="text-big-lighter">only once</Kbd>
+          //   </Flex>
+          // }
+          error={username_conditions}
+          errorMessage={username_messages}
         />
         <Input
           radius="none"
@@ -244,8 +401,8 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
               onChange={(e) => handleChange("location", e.target.value)}
             />
             <Button
-              variant="primary"                        data-theme="dark"
-
+              variant="primary"
+              data-theme="dark"
               onClick={async () => {
                 handleSave();
               }}
