@@ -98,13 +98,15 @@ export default function Nav({ id }: { id: string }) {
             >
               {description}
             </Text>
-            <Text
-              variant="body-default-xs"
-              style={{ color: "#6B6B6B" }}
-              className={inter.className}
-            >
-              &nbsp;•&nbsp;{location}
-            </Text>
+            {location ? (
+              <Text
+                variant="body-default-xs"
+                style={{ color: "#6B6B6B" }}
+                className={inter.className}
+              >
+                &nbsp;•&nbsp;{location}
+              </Text>
+            ) : null}
           </Row>
         </Column>
       </Row>
@@ -120,7 +122,6 @@ export default function Nav({ id }: { id: string }) {
           </Text>
         </Button>
       </Row>
-      
     </Row>
   );
 }
