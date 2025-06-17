@@ -4,6 +4,7 @@ import { Column, Text, Row, Avatar, Button } from "@once-ui-system/core";
 import { Inter } from "next/font/google";
 import { supabase } from "@/app/lib/supabase";
 import { useState, useEffect } from "react";
+import "./../global.css";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -11,16 +12,17 @@ const inter = Inter({
   display: "swap",
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
-import "./../global.css";
+
+interface UserData {
+  name: string;
+  email: string;
+  location: string;
+  description: string;
+  pfp?: string;
+}
 
 export default function Nav({ id }: { id: string }) {
-  const [userData, setUserData] = useState<{
-    name: string;
-    email: string;
-    location: string;
-    description: string;
-    pfp?: string;
-  } | null>(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -33,9 +35,10 @@ export default function Nav({ id }: { id: string }) {
 
         if (error) {
           console.error("Error fetching user data:", error);
-        } else {
-          setUserData(data.nav);
+          return;
         }
+
+        setUserData(data.nav);
       } catch (err) {
         console.error("Unexpected error:", err);
       }
@@ -55,7 +58,10 @@ export default function Nav({ id }: { id: string }) {
 
         if (error) {
           console.error("Error fetching user profile picture:", error);
-        } else if (data) {
+          return;
+        }
+
+        if (data) {
           setUserData((prev) => (prev ? { ...prev, pfp: data.pfp } : prev));
         }
       } catch (err) {
@@ -70,58 +76,67 @@ export default function Nav({ id }: { id: string }) {
     return <Text></Text>;
   }
 
-  const { name, email, location, description } = userData;
+  const { name, email, location, description, pfp } = userData;
 
   return (
-    <Row
-      fillWidth
-      fitHeight
-      horizontal="space-between"
-      vertical="center"
-      padding="s"
-    >
-      <Row fitWidth fillHeight center gap="8">
-        <Avatar size={2.7} src={userData.pfp || ""}></Avatar>
-        <Column horizontal="start" vertical="center" fitWidth fitHeight gap="1">
-          <Text
-            variant="body-strong-s"
-            onBackground="neutral-medium"
-            className={inter.className}
+    <>
+      <Row
+        fillWidth
+        fitHeight
+        horizontal="space-between"
+        vertical="center"
+        padding="s"
+      >
+        <Row vertical="center" gap="8">
+          {" "}
+          <Avatar size={2.7} src={pfp || ""} />
+          <Column
+            horizontal="start"
+            vertical="center"
+            fitWidth
+            fitHeight
+            gap="1"
           >
-            {name}
-          </Text>
-          <Row>
             <Text
-              variant="body-default-xs"
-              style={{ color: "#6B6B6B" }}
+              variant="body-strong-s"
+              onBackground="neutral-medium"
               className={inter.className}
             >
-              {description}
+              {name}
             </Text>
-            {location ? (
+            <Row>
               <Text
                 variant="body-default-xs"
                 style={{ color: "#6B6B6B" }}
                 className={inter.className}
               >
-                &nbsp;•&nbsp;{location}
+                {description}
               </Text>
-            ) : null}
-          </Row>
-        </Column>
+              {location && (
+                <Text
+                  variant="body-default-xs"
+                  style={{ color: "#6B6B6B" }}
+                  className={inter.className}
+                >
+                  &nbsp;•&nbsp;{location}
+                </Text>
+              )}
+            </Row>
+          </Column>
+        </Row>
+        <Row fitWidth fillHeight center>
+          <Button
+            variant="secondary"
+            size="m"
+            style={{ backgroundColor: "#1c1c1c", padding: "5px 12px" }}
+            onClick={() => window.open(`mailto:${email}`, "_blank")}
+          >
+            <Text variant="body-default-m" style={{ color: "#6B6B6B" }}>
+              <i className="ri-links-line"></i>&nbsp;E-mail
+            </Text>
+          </Button>
+        </Row>
       </Row>
-      <Row fitWidth fillHeight center>
-        <Button
-          variant="secondary"
-          size="m"
-          style={{ backgroundColor: "#1c1c1c", padding: "5px 12px" }}
-          onClick={() => window.open(`mailto:${email}`, "_blank")}
-        >
-          <Text variant="body-default-m" style={{ color: "#6B6B6B" }}>
-            <i className="ri-links-line"></i>&nbsp;E-mail
-          </Text>
-        </Button>
-      </Row>
-    </Row>
+    </>
   );
 }

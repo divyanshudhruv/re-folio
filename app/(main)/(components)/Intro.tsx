@@ -4,21 +4,24 @@ import { Column, Text, Flex, Row, Kbd } from "@once-ui-system/core";
 import { Inter } from "next/font/google";
 import { supabase } from "@/app/lib/supabase";
 import { useState, useEffect } from "react";
+import "./../global.css";
+
 const inter = Inter({
     subsets: ["latin"],
     variable: "--font-inter",
     display: "swap",
     weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
-import "./../global.css";
+
+interface IntroData {
+    tags: string[];
+    heading: string;
+    subheading: string;
+    paragraphs: string[];
+}
 
 export default function Intro({ id }: { id: string }) {
-    const [introData, setIntroData] = useState<{
-        tags: string[];
-        heading: string;
-        subheading: string;
-        paragraphs: string[];
-    } | null>(null);
+    const [introData, setIntroData] = useState<IntroData | null>(null);
 
     useEffect(() => {
         const fetchIntroData = async () => {
@@ -47,16 +50,20 @@ export default function Intro({ id }: { id: string }) {
     }
 
     const { tags, heading, subheading, paragraphs } = introData;
+
+    const hasValidData = Object.keys(introData).some(
+        (key) =>
+            key !== "id" &&
+            ["tags", "heading", "subheading", "paragraphs"].includes(key) &&
+            introData[key as keyof IntroData]?.length > 0
+    );
+
+    if (!hasValidData) {
+        return null;
+    }
+
     return (
-        introData &&
-        Object.keys(introData).some(
-            (key) =>
-                key !== "id" &&
-                (key === "tags" || key === "heading" || key === "subheading" || key === "paragraphs") &&
-                introData[key] &&
-                introData[key].length > 0
-        ) && (
-            <>
+        <>
             <Column
                 fillWidth
                 fitHeight
@@ -68,7 +75,7 @@ export default function Intro({ id }: { id: string }) {
             >
                 <Text
                     variant="heading-strong-xl"
-                    className={inter.className + " text-responsive-heading"}
+                    className={`${inter.className} text-responsive-heading`}
                     style={{
                         lineHeight: "1.4",
                         fontSize: "30px",
@@ -79,16 +86,16 @@ export default function Intro({ id }: { id: string }) {
                     {heading}{" "}
                     <Text style={{ color: "#6B6B6B" }}>{subheading}</Text>
                 </Text>
-                <Flex fillWidth></Flex>
+                <Flex fillWidth />
                 {paragraphs.map((text, index) => (
                     <Text
                         key={index}
-                        className={inter.className + " text-paragraph text-responsive-paragraph"}
+                        className={`${inter.className} text-paragraph text-responsive-paragraph`}
                     >
                         {text}
                     </Text>
                 ))}
-                <Flex></Flex>
+                <Flex />
                 <Row gap="8">
                     {tags.map((tag, index) => (
                         <Kbd
@@ -102,7 +109,7 @@ export default function Intro({ id }: { id: string }) {
                     ))}
                 </Row>
             </Column>
-             <Flex fillWidth height={2.5}></Flex></>
-        )
+            <Flex fillWidth height={2.5} />
+        </>
     );
 }
