@@ -37,8 +37,19 @@ export default function Intro({ id }: { id: string }) {
 
         if (error) {
           console.error("Error fetching intro data:", error);
-        } else {
-          setIntroData(data.intro);
+          return;
+        }
+
+        if (!data?.intro) {
+          setIntroData({
+            heading: "Hello, this is my re-folio, ",
+            subheading: "where I showcase my !",
+            paragraphs: [
+              "Welcome to my portfolio space where I showcase my projects, skills, and professional work. This platform serves as a comprehensive collection of my technical achievements and experiences.",
+            ],
+            tags: [],
+          });
+          return;
         }
       } catch (err) {
         console.error("Unexpected error:", err);
