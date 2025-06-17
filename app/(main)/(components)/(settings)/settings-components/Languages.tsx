@@ -20,14 +20,22 @@ const inter = Inter({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
+interface LanguageRow {
+  id: number;
+  name: string;
+  proficiency: string;
+}
+
 export default function LanguageSetting({ id }: { id: string }) {
   const { addToast } = useToast();
-  const [rows, setRows] = useState([{ id: 1, name: "", proficiency: "" }]);
+  const [rows, setRows] = useState<LanguageRow[]>([
+    { id: 1, name: "", proficiency: "" },
+  ]);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    async function fetchSession() {
+    const fetchSession = async () => {
       const {
         data: { session },
       } = await supabase.auth.getSession();
@@ -37,15 +45,15 @@ export default function LanguageSetting({ id }: { id: string }) {
       } else {
         console.log("No active session found.");
       }
-    }
+    };
 
     fetchSession();
-  }, []); // Runs only once when the component mounts
+  }, []);
 
   useEffect(() => {
     if (!sessionId) return;
 
-    async function fetchLanguages() {
+    const fetchLanguages = async () => {
       const { data, error } = await supabase
         .from("refolio_sections")
         .select("languages")
@@ -54,7 +62,10 @@ export default function LanguageSetting({ id }: { id: string }) {
 
       if (error) {
         console.error("Error fetching languages:", error.message);
-      } else if (data && data.languages) {
+        return;
+      }
+
+      if (data?.languages) {
         setRows(
           data.languages.map((language: any, index: number) => ({
             id: index + 1,
@@ -63,12 +74,12 @@ export default function LanguageSetting({ id }: { id: string }) {
           }))
         );
       }
-    }
+    };
 
     fetchLanguages();
-  }, [sessionId, id]); // Runs only when sessionId or id changes
+  }, [sessionId, id]);
 
-  async function handleSave() {
+  const handleSave = async () => {
     try {
       const languages = rows.map(({ name, proficiency }) => ({
         name,
@@ -91,29 +102,29 @@ export default function LanguageSetting({ id }: { id: string }) {
         message: `Failed to save languages: ${error.message}`,
       });
     }
-  }
+  };
 
-  function newRow() {
+  const newRow = () => {
     if (rows.length < 8) {
       setRows([...rows, { id: rows.length + 1, name: "", proficiency: "" }]);
     }
-  }
+  };
 
-  function updateRow(id: number, field: string, value: string) {
+  const updateRow = (id: number, field: keyof LanguageRow, value: string) => {
     setRows((prevRows) =>
       prevRows.map((row) => (row.id === id ? { ...row, [field]: value } : row))
     );
-  }
+  };
 
-  function deleteLastRow() {
+  const deleteLastRow = () => {
     if (rows.length > 1) {
       setRows(rows.slice(0, -1));
     }
-  }
+  };
 
   return (
     <Column fillWidth fitHeight gap="16">
-      <HeadingLink as="h6" id="lannguages">
+      <HeadingLink as="h6" id="languages">
         <Text
           variant="heading-strong-xs"
           onBackground="neutral-medium"
@@ -159,7 +170,7 @@ export default function LanguageSetting({ id }: { id: string }) {
             </Row>
           </Row>
         ))}
-        <Flex height={1}> </Flex>
+        <Flex height={1} />
         <Row fillWidth horizontal="end" vertical="center" gap="8">
           <Button
             variant="secondary"

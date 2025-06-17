@@ -10,7 +10,7 @@ import {
   Kbd,
 } from "@once-ui-system/core";
 import { Inter } from "next/font/google";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/app/lib/supabase";
 
 const inter = Inter({
@@ -31,139 +31,78 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState<string>("");
+  const [usernameConditions, setUsernameConditions] = useState<boolean>(true);
+  const [usernameMessages, setUsernameMessages] = useState<string>("");
 
-  useEffect(() => {
-    const fetchUsername = async () => {
-      try {
-        const { data, error } = await supabase
-          .from("refolio_sections")
-          .select("username")
-          .eq("id", id)
-          .single();
+  const fetchData = useCallback(async () => {
+    try {
+      const [{ data: userData }, { data: avatarData }, { data: navData }] =
+        await Promise.all([
+          supabase.from("refolio_sections").select("username").eq("id", id).single(),
+          supabase.from("users").select("pfp").eq("id", id).single(),
+          supabase.from("refolio_sections").select("nav").eq("id", id).single(),
+        ]);
 
-        if (error) {
-          console.error("Error fetching username:", error);
-        } else if (data?.username) {
-          setUsername(data.username);
-        }
-      } catch (err) {
-        console.error("Unexpected error:", err);
-      }
-    };
-
-    fetchUsername();
+      if (userData?.username) setUsername(userData.username);
+      if (avatarData?.pfp) setPersonalDetails((prev) => ({ ...prev, pfp: avatarData.pfp }));
+      if (navData?.nav) setPersonalDetails(navData.nav);
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    }
   }, [id]);
 
-  const [username_conditions, setUsernameConditions] = useState<boolean>(true);
-  const [username_messages, setUsernameMessages] = useState<string>("");
-
-  useEffect(() => {
-    const fetchSession = async () => {
-      try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        if (session) {
-          setSessionId(session.user.id);
-        } else {
-          console.log("No active session found.");
-        }
-      } catch (err) {
-        console.error("Unexpected error:", err);
-      }
-    };
-
-    fetchSession();
-  }, []); // Runs only once when the component mounts
-
-  useEffect(() => {
-    const fetchAvatarUrl = async () => {
-      try {
-        const { data, error } = await supabase
-          .from("users")
-          .select("pfp")
-          .eq("id", id)
-          .single();
-
-        if (error) {
-          console.error("Error fetching avatar URL:", error);
-        } else if (data?.pfp) {
-          setPersonalDetails((prev) => ({
-            ...prev,
-            pfp: data.pfp,
-          }));
-        }
-      } catch (err) {
-        console.error("Unexpected error:", err);
-      }
-    };
-
-    fetchAvatarUrl();
+  const fetchSession = useCallback(async () => {
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session) setSessionId(session.user.id);
+    } catch (err) {
+      console.error("Error fetching session:", err);
+    }
   }, []);
 
-  useEffect(() => {
-    const fetchPersonalDetails = async () => {
-      try {
-        const { data, error } = await supabase
-          .from("refolio_sections")
-          .select("nav")
-          .eq("id", id)
-          .single();
+  const checkUsernameChangePermission = useCallback(async () => {
+    try {
+      const { data, error } = await supabase
+        .from("refolio_sections")
+        .select("can_change_username")
+        .eq("id", id)
+        .single();
 
-        if (error) {
-          console.error("Error fetching personal details:", error);
-        } else if (data && data.nav) {
-          setPersonalDetails(data.nav);
-        }
-      } catch (err) {
-        console.error("Unexpected error:", err);
+      if (error) throw error;
+
+      if (data?.can_change_username) {
+        setUsernameMessages("You can change your username only once. Please choose wisely.");
+      } else {
+        setUsernameConditions(false);
+        setUsernameMessages("Username change is disabled. You can only change it once.");
       }
-    };
-
-    fetchPersonalDetails();
+    } catch (err) {
+      console.error("Error checking username change permission:", err);
+    }
   }, [id]);
+
+  useEffect(() => {
+    fetchData();
+    fetchSession();
+    checkUsernameChangePermission();
+  }, [fetchData, fetchSession, checkUsernameChangePermission]);
 
   const handleSave = async () => {
     setLoading(true);
-    console.log(personalDetails);
-    const updatePersonalDetails = async () => {
-      try {
-        const { error } = await supabase
-          .from("refolio_sections")
-          .update({ nav: personalDetails })
-          .eq("id", id);
-
-        if (error) {
-          console.error("Error updating personal details:", error);
-        } else {
-          console.log("Personal details updated successfully");
-        }
-      } catch (err) {
-        console.error("Unexpected error:", err);
-      }
-    };
-
-    const updateAvatarUrl = async () => {
-      try {
-        const { error: userError } = await supabase
-          .from("users")
-          .update({ pfp: personalDetails.pfp })
-          .eq("id", id);
-
-        if (userError) {
-          console.error("Error updating avatar URL in users table:", userError);
-        } else {
-          console.log("Avatar URL updated successfully in users table");
-        }
-      } catch (err) {
-        console.error("Unexpected error:", err);
-      }
-    };
-
-    await updatePersonalDetails();
-    await updateAvatarUrl();
-    await changeUsername(username);
-    setLoading(false);
+    try {
+      await Promise.all([
+        supabase.from("refolio_sections").update({ nav: personalDetails }).eq("id", id),
+        supabase.from("users").update({ pfp: personalDetails.pfp }).eq("id", id),
+        changeUsername(username),
+      ]);
+      console.log("Personal details and avatar updated successfully");
+    } catch (err) {
+      console.error("Error saving data:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (field: string, value: string) => {
@@ -174,113 +113,52 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
     if (!userId) return;
 
     try {
-      const fileName = `avatars/${sessionId}/${userId}-${Date.now()}-${
-        file.name
-      }`;
+      const fileName = `avatars/${sessionId}/${userId}-${Date.now()}-${file.name}`;
       const { data, error } = await supabase.storage
-        .from("attachments") // Replace with your bucket name
+        .from("attachments")
         .upload(fileName, file);
 
-      if (error) {
-        throw new Error(
-          `Failed to upload file for user ${userId}: ${error.message}`
-        );
-      }
+      if (error) throw new Error(`Failed to upload file: ${error.message}`);
 
       const { data: publicUrlData } = supabase.storage
-        .from("attachments") // Replace with your bucket name
+        .from("attachments")
         .getPublicUrl(data.path);
 
-      if (!publicUrlData.publicUrl) {
-        throw new Error(`Failed to get public URL for user ${userId}`);
-      }
+      if (!publicUrlData.publicUrl) throw new Error("Failed to get public URL");
 
-      setPersonalDetails((prev) => ({
-        ...prev,
-        pfp: publicUrlData.publicUrl,
-      }));
-
+      setPersonalDetails((prev) => ({ ...prev, pfp: publicUrlData.publicUrl }));
       console.log("File uploaded successfully:", publicUrlData.publicUrl);
-    } catch (error: any) {
-      console.error(error);
+    } catch (err) {
+      console.error("Error uploading file:", err);
     }
   };
 
-  useEffect(() => {
-    const checkUsernameChangePermission = async () => {
-      try {
-        const { data, error } = await supabase
-          .from("refolio_sections")
-          .select("can_change_username")
-          .eq("id", id)
-          .single();
-
-        if (error) {
-          console.error("Error fetching can_change_username:", error);
-          return;
-        }
-
-        if (data?.can_change_username) {
-          setUsernameMessages(
-            "You can change your username only once. Please choose wisely."
-          );
-        } else {
-          setUsernameConditions(false);
-          setUsernameMessages(
-            "Username change is disabled. You can only change it once."
-          );
-        }
-      } catch (err) {
-        console.error("Unexpected error:", err);
-      }
-    };
-
-    checkUsernameChangePermission();
-  }, [id]);
-
-  async function changeUsername(username_args: string) {
-
-    if (username_args.includes(" ")) {
+  const changeUsername = async (usernameArgs: string) => {
+    if (usernameArgs.includes(" ")) {
       setUsernameMessages("Username should not contain spaces. Please choose another.");
       return;
     }
+
     try {
       const { data: existingUsernames, error: fetchError } = await supabase
         .from("refolio_sections")
         .select("username, id");
 
-      if (fetchError) {
-        console.error("Error fetching existing usernames:", fetchError);
-        return;
-      }
+      if (fetchError) throw fetchError;
 
       const isUsernameTaken = existingUsernames.some(
-        (user) => user.username === username_args && user.id !== id
+        (user) => user.username === usernameArgs && user.id !== id
       );
 
       if (isUsernameTaken) {
-        setUsernameMessages(
-          "This username is already taken. Please choose another."
-        );
+        setUsernameMessages("This username is already taken. Please choose another.");
         return;
       }
 
       const currentUser = existingUsernames.find((user) => user.id === id);
 
-      if (currentUser?.username === username_args) {
-        const { error: updateError } = await supabase
-          .from("refolio_sections")
-          .update({
-            username: username_args.replaceAll(" ", "-"),
-          })
-          .eq("id", id);
-
-        if (updateError) {
-          console.error("Error updating username:", updateError);
-        } else {
-          console.log("Username updated successfully");
-          setUsernameMessages("Current username is already set.");
-        }
+      if (currentUser?.username === usernameArgs) {
+        setUsernameMessages("Current username is already set.");
         return;
       }
 
@@ -290,35 +168,25 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
         .eq("id", id)
         .single();
 
-      if (error) {
-        console.error("Error fetching can_change_username:", error);
-        return;
-      }
+      if (error) throw error;
 
       if (data?.can_change_username) {
-        const { error: updateError } = await supabase
+        await supabase
           .from("refolio_sections")
           .update({
-            username: username_args.replaceAll(" ", "-"),
+            username: usernameArgs.replaceAll(" ", "-"),
             can_change_username: false,
           })
           .eq("id", id);
 
-        if (updateError) {
-          console.error("Error updating username:", updateError);
-        } else {
-          console.log("Username updated successfully");
-          setUsernameMessages("Username updated successfully!");
-        }
+        setUsernameMessages("Username updated successfully!");
       } else {
-        setUsernameMessages(
-          "You can only change your username once. Please contact support."
-        );
+        setUsernameMessages("You can only change your username once. Please contact support.");
       }
     } catch (err) {
-      console.error("Unexpected error:", err);
+      console.error("Error changing username:", err);
     }
-  }
+  };
 
   return (
     <Column fillWidth fitHeight gap="16">
@@ -340,26 +208,16 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
           value={personalDetails.name}
           onChange={(e) => handleChange("name", e.target.value)}
         />
-        <Flex></Flex>
         <Input
           radius="none"
-          id="input-1"
+          id="input-username"
           placeholder="username"
           height="m"
           hasPrefix={<i className="ri-at-line text-big-darker"></i>}
           value={username}
-          onChange={(e) => {
-            const value = e.target.value;
-            
-            setUsername(value);
-          }}
-          // hasSuffix={
-          //   <Flex minWidth={5}>
-          //     <Kbd className="text-big-lighter">only once</Kbd>
-          //   </Flex>
-          // }
-          error={username_conditions}
-          errorMessage={username_messages}
+          onChange={(e) => setUsername(e.target.value)}
+          error={usernameConditions}
+          errorMessage={usernameMessages}
         />
         <Input
           radius="none"
@@ -396,7 +254,7 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
               if (file) handleFileUpload(id, file);
             }}
             initialPreviewImage={personalDetails.pfp}
-          ></MediaUpload>
+          />
           <Column fillWidth horizontal="end" gap="16">
             <Input
               id="input-4"
@@ -409,9 +267,7 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
             <Button
               variant="primary"
               data-theme="dark"
-              onClick={async () => {
-                handleSave();
-              }}
+              onClick={handleSave}
               disabled={loading}
             >
               {loading ? "Saving..." : "Save"}

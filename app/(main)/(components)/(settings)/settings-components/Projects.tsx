@@ -21,16 +21,16 @@ const inter = Inter({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
+interface Project {
+  id: number;
+  src: string;
+  title: string;
+  description: string;
+  href: string;
+}
+
 export default function ProjectSetting({ id }: { id: string }) {
-  const [projects, setProjects] = useState<
-    {
-      id: number;
-      src: string;
-      title: string;
-      description: string;
-      href: string;
-    }[]
-  >([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -40,18 +40,14 @@ export default function ProjectSetting({ id }: { id: string }) {
         const {
           data: { session },
         } = await supabase.auth.getSession();
-        if (session) {
-          setSessionId(session.user.id);
-        } else {
-          console.log("No active session found.");
-        }
+        setSessionId(session?.user.id || null);
       } catch (err) {
-        console.error("Unexpected error:", err);
+        console.error("Error fetching session:", err);
       }
     };
 
     fetchSession();
-  }, []); // Runs only once when the component mounts
+  }, []);
 
   useEffect(() => {
     if (!sessionId) return;
@@ -66,24 +62,27 @@ export default function ProjectSetting({ id }: { id: string }) {
 
         if (error) {
           console.error("Error fetching projects:", error);
-        } else if (data && data.projects) {
-          const fetchedProjects = data.projects.map(
+          return;
+        }
+
+        if (data?.projects) {
+          const formattedProjects = data.projects.map(
             (project: any, index: number) => ({
               id: index + 1,
               ...project,
             })
           );
-          setProjects(fetchedProjects);
+          setProjects(formattedProjects);
         }
       } catch (err) {
-        console.error("Unexpected error:", err);
+        console.error("Error fetching projects:", err);
       }
     };
 
     fetchProjects();
-  }, [sessionId, id]); // Runs only when sessionId or id changes
+  }, [sessionId, id]);
 
-  async function handleFileUpload(projectId: number, file: File) {
+  const handleFileUpload = async (projectId: number, file: File) => {
     if (!sessionId) return;
 
     try {
@@ -92,125 +91,100 @@ export default function ProjectSetting({ id }: { id: string }) {
         .from("attachments")
         .upload(fileName, file);
 
-      if (error) {
-        throw new Error(
-          `Failed to upload file for project ${projectId}: ${error.message}`
-        );
-      }
+      if (error) throw new Error(`File upload failed: ${error.message}`);
 
       const { data: publicUrlData } = supabase.storage
         .from("attachments")
         .getPublicUrl(data.path);
 
       if (!publicUrlData.publicUrl) {
-        throw new Error(`Failed to get public URL for project ${projectId}`);
+        throw new Error("Failed to retrieve public URL");
       }
 
-      setProjects((prevProjects) =>
-        prevProjects.map((project) =>
+      setProjects((prev) =>
+        prev.map((project) =>
           project.id === projectId
             ? { ...project, src: publicUrlData.publicUrl }
             : project
         )
       );
-    } catch (error: any) {
-      console.error(error);
+    } catch (err) {
+      console.error("Error uploading file:", err);
     }
-  }
+  };
 
-  function addProject() {
+  const addProject = () => {
     if (projects.length < 8) {
       setProjects([
         ...projects,
-        {
-          id: projects.length + 1,
-          src: "",
-          title: "",
-          description: "",
-          href: "",
-        },
+        { id: projects.length + 1, src: "", title: "", description: "", href: "" },
       ]);
     }
-  }
+  };
 
-  async function handleSave() {
+  const deleteLastProject = () => {
+    if (projects.length > 1) {
+      setProjects(projects.slice(0, -1));
+    }
+  };
+
+  const updateProject = (projectId: number, field: keyof Project, value: any) => {
+    setProjects((prev) =>
+      prev.map((project) =>
+        project.id === projectId ? { ...project, [field]: value } : project
+      )
+    );
+  };
+
+  const handleSave = async () => {
     setLoading(true);
-    const jsonOutput = await Promise.all(
-      projects.map(async ({ id, src, ...project }) => {
-        let formattedHref = project.href;
 
-        if (formattedHref && !formattedHref.startsWith("https://")) {
-          try {
+    try {
+      const formattedProjects = await Promise.all(
+        projects.map(async ({ id, src, ...project }) => {
+          let formattedHref = project.href;
+
+          if (formattedHref && !formattedHref.startsWith("https://")) {
             const { data, error } = await supabase
               .from("refolio_sections")
               .select("projects")
               .eq("id", id)
               .single();
 
-            if (error) {
-              console.error("Error checking href in database:", error);
-            } else if (data && data.projects) {
+            if (!error && data?.projects) {
               const existingProject = data.projects.find(
                 (dbProject: any) => dbProject.href === project.href
               );
-
               if (!existingProject) {
                 formattedHref = `https://${formattedHref}`;
               }
             }
-          } catch (err) {
-            console.error("Unexpected error:", err);
           }
-        }
 
-        // Set default image src if no file is uploaded
-        const updatedSrc =
-          src ||
-          "https://farmshopmfg.com/wp-content/uploads/2023/03/placeholder.png";
+          return {
+            ...project,
+            src: src || "https://farmshopmfg.com/wp-content/uploads/2023/03/placeholder.png",
+            href: formattedHref,
+          };
+        })
+      );
 
-        return {
-          ...project,
-          src: updatedSrc,
-          href: formattedHref,
-        };
-      })
-    );
+      const { error } = await supabase
+        .from("refolio_sections")
+        .update({ projects: formattedProjects })
+        .eq("id", id);
 
-    const saveProjects = async () => {
-      try {
-        const { error } = await supabase
-          .from("refolio_sections")
-          .update({ projects: jsonOutput })
-          .eq("id", id);
-
-        if (error) {
-          console.error("Error saving projects:", error);
-        } else {
-          console.log("Projects saved successfully:", jsonOutput);
-        }
-      } catch (err) {
-        console.error("Unexpected error:", err);
-      } finally {
-        setLoading(false);
+      if (error) {
+        console.error("Error saving projects:", error);
+      } else {
+        console.log("Projects saved successfully");
       }
-    };
-
-    saveProjects();
-  }
-
-  function updateProject(id: number, field: string, value: any) {
-    setProjects((prevProjects) =>
-      prevProjects.map((project) =>
-        project.id === id ? { ...project, [field]: value } : project
-      )
-    );
-  }
-
-  function deleteLastProject() {
-    if (projects.length > 1) {
-      setProjects(projects.slice(0, -1));
+    } catch (err) {
+      console.error("Error saving projects:", err);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <Column fillWidth fitHeight gap="16">
@@ -225,12 +199,7 @@ export default function ProjectSetting({ id }: { id: string }) {
       </HeadingLink>
       <Column gap="16" horizontal="start" fillWidth>
         {projects.map((project) => (
-          <Row
-            key={project.id}
-            gap="16"
-            fillWidth
-            id={`project-row-${project.id}`}
-          >
+          <Row key={project.id} gap="16" fillWidth>
             <Text
               variant="heading-default-xs"
               onBackground="neutral-weak"
@@ -240,32 +209,25 @@ export default function ProjectSetting({ id }: { id: string }) {
             </Text>
             <Column fillWidth>
               <Input
+              id=""
                 radius="top"
-                id={`title-${project.id}`}
                 label="Title"
                 height="s"
                 value={project.title}
-                onChange={(e) =>
-                  updateProject(project.id, "title", e.target.value)
-                }
+                onChange={(e) => updateProject(project.id, "title", e.target.value)}
               />
               <Input
+              id=""
                 radius="none"
-                id={`href-${project.id}`}
                 placeholder="Link to project"
                 height="m"
                 value={project.href}
-                onChange={(e) => {
-                  const value = e.target.value;
-
-                  updateProject(project.id, "href", value);
-                }}
+                onChange={(e) => updateProject(project.id, "href", e.target.value)}
                 hasPrefix={<Text className="text-big-darker">https://</Text>}
               />
-
               <Input
+              id=""
                 radius="none"
-                id={`description-${project.id}`}
                 label="Description"
                 height="s"
                 value={project.description}
@@ -281,7 +243,7 @@ export default function ProjectSetting({ id }: { id: string }) {
                   zIndex: "990",
                 }}
                 className="text-big-lightest"
-                emptyState={"Cover Image"}
+                emptyState="Cover Image"
                 onChange={(event) => {
                   const file = (event.target as HTMLInputElement).files?.[0];
                   if (file) handleFileUpload(project.id, file);
@@ -291,7 +253,6 @@ export default function ProjectSetting({ id }: { id: string }) {
             </Column>
           </Row>
         ))}
-
         <Row fillWidth horizontal="end" vertical="center" gap="8">
           <Button
             variant="secondary"
@@ -310,9 +271,7 @@ export default function ProjectSetting({ id }: { id: string }) {
           <Button
             variant="primary"
             data-theme="dark"
-            onClick={async () => {
-              handleSave();
-            }}
+            onClick={handleSave}
             disabled={loading}
           >
             {loading ? "Saving..." : "Save"}
