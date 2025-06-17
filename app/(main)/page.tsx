@@ -12,6 +12,7 @@ import {
   Flex,
   Media,
   SmartLink,
+  Kbd,
 } from "@once-ui-system/core";
 import { useState, useEffect } from "react";
 import { Inter } from "next/font/google";
@@ -133,7 +134,13 @@ function LoginCard() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Column maxWidth={37.5} center fillWidth fitHeight className="body-container">
+      <Column
+        maxWidth={37.5}
+        center
+        fillWidth
+        fitHeight
+        className="body-container"
+      >
         <CardContent
           email={email}
           setEmail={setEmail}
@@ -184,9 +191,22 @@ function CardContent({
         style={{ fontSize: "29px" }}
         className={inter.className + " text-big-lightest"}
       >
-        Sign Up
+        <Row vertical="center">
+          Sign Up&nbsp;
+          <Kbd
+            background="accent-medium"
+            border="accent-medium"
+            onBackground="accent-weak"
+            height={1.3}
+          >
+            Beta
+          </Kbd>
+        </Row>
       </Text>
-      <Text variant="body-default-xl" className={inter.className + " text-small"}>
+      <Text
+        variant="body-default-xl"
+        className={inter.className + " text-small"}
+      >
         Create a free{" "}
         <SmartLink href={"/"}>
           <u>re-folio</u>
@@ -194,7 +214,7 @@ function CardContent({
         account
       </Text>
       <Input
-      id=""
+        id=""
         placeholder="Enter your email"
         height="m"
         size={32}
@@ -261,12 +281,12 @@ function CardContent({
 
 function Divider() {
   return (
-    <Column fillWidth center>
+    <Column fillWidth center height={2.25}>
       <Line
         fillWidth
         width={25}
-        height={0.08}
-        style={{ backgroundColor: "#262626" }}
+        height={0.1}
+        style={{ backgroundColor: "#262626",position:"absolute" }}
         zIndex={9}
       />
       <Flex zIndex={10}>
@@ -286,10 +306,10 @@ function Divider() {
 function FooterLinks() {
   return (
     <>
-      <Text className="text-small" style={{ marginTop: "-30px" }}>
-        sign up for early access
+    <Text className="text-small" style={{ marginTop: "-30px" }}>
+        signup for early access
       </Text>
-      <Text className="text-small" style={{ marginTop: "-0px" }}>
+      <Text className="text-small" style={{ marginTop: "0px" }}>
         already logged in? <SmartLink href="/user/me">click here</SmartLink>
       </Text>
     </>
@@ -327,7 +347,9 @@ function LoginText() {
         >
           <Text
             style={{ fontSize: "15px" }}
-            className={inter.className + " text-paragraph text-responsive-paragraph"}
+            className={
+              inter.className + " text-paragraph text-responsive-paragraph"
+            }
           >
             Re-Folio is designed to help you create stunning resume portfolios
             with ease. Whether you're a designer, developer, or creative
