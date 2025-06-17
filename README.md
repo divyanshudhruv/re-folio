@@ -1,13 +1,12 @@
 # 📄⛓️‍💥 Refolio
 
-Re-Folio lets you **`beautifully`** showcase your 🤹 **`skills`**, 🗄️ **`projects`**, and 💼 **`experience`** — all in a sleek, modern format. 🧪
+Re-Folio lets you **`beautifully`** showcase your 🤹 **`skills`**, 🗄️ **`projects`**, and 💼 **`experience`** — all in a sleek, modern **`format`** 🧪.
 
 <br>
 
 > [!IMPORTANT]\
-> If you find this repository helpful and want to support the project, please give it a **star** on GitHub! Your star helps the development.
+> If you find this repository helpful and want to support the project, please give it a `star` on GitHub! Your star helps the development.
 
-<br>
 
 > [!NOTE]\
 > Expect bugs and errors because the project is currently in `beta` stage.
@@ -164,7 +163,7 @@ These are <i>essential</i> for connecting to Supabase for <b>authentication</b>,
     ```
 
 - 🌗 **Theming:**
-  - Supports only dark mode.
+  - Unfortunately supports only dark mode 🥲.
 
 <br>
 
@@ -179,7 +178,7 @@ divyanshudhruv/re-folio
 │   ├── (main)/               # Main application group
 │   │   ├── page.tsx          # Landing/Login page
 │   │   ├── layout.tsx        # Main layout for public pages
-│   │   ├── (components)/     # Display components for portfolio sections
+│   │   ├── (components)/...  # Display components for portfolio sections
 │   │   ├── [user]/           # Dynamic route for public user portfolios
 │   │   │   └── page.tsx
 │   │   ├── auth/             # Authentication related pages (e.g., callback)
@@ -206,16 +205,17 @@ Connect with us!
 
 **`1.`** **👨‍💻 Divyanshu Dhruv**: [Site](https://divyanshudhruv.is-a.dev) / [LinkedIn](https://www.linkedin.com/in/divyanshudhruv/)
 
-**`2.`** **👨‍💻 Lorant One**: [Site](https://lorant.one) / [Threads](https://www.threads.net/@lorant.one) / [LinkedIn](https://www.linkedin.com/in/lorant-one/)
+<!-- adding more -->
 
+<br>
 
-## 📄 **License** 📄
+## 🚩 **License**
 
 See [`LICENSE`](LICENSE) for details. 📜
 
 <br>
 
-## 🏷️ **Credits** 🏷️
+## 🏷️ **Credits**
 
 - 🧩 Built with [Once UI](https://once-ui.com)
 - 🦸 Powered by [Supabase](https://supabase.com)
