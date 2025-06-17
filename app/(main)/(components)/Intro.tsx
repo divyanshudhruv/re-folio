@@ -43,7 +43,7 @@ export default function Intro({ id }: { id: string }) {
         if (!data?.intro) {
           setIntroData({
             heading: "Hello, this is my re-folio, ",
-            subheading: "where I showcase my !",
+            subheading: "where I showcase my works!",
             paragraphs: [
               "Welcome to my portfolio space where I showcase my projects, skills, and professional work. This platform serves as a comprehensive collection of my technical achievements and experiences.",
             ],
