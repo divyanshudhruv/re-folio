@@ -105,7 +105,6 @@ const meta = {
     robots: "index, follow",
     alternates: [{ href: "https://re-folio.vercel.app", hrefLang: "en-US" }],
   },
-  // Extend with additional routes and reference them in page.tsx as needed
 };
 
 // default schema data
