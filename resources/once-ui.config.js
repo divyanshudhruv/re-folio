@@ -1,5 +1,5 @@
 // IMPORTANT: Replace with your own domain address - it's used for SEO in meta tags and schema
-const baseURL = "https://demo.once-ui.com";
+const baseURL = "https://re-folio.vercel.app";
 
 // Import and set font for each variant
 import { Geist } from "next/font/google";
@@ -99,9 +99,9 @@ const meta = {
     path: "/",
     title: "Re-Folio: Transform Your Resume into a Stunning Portfolio",
     description:
-      "Unlock your potential with Re-Folio. Craft an unforgettable online presence that transcends the ordinary resume and portfolio. Our Next.js platform offers stunning design and seamless customization to transform your professional story. Discover how to truly stand out.",
+      "Unlock your potential with Re-Folio. Craft an unforgettable online presence that transcends the ordinary resume and portfolio. Discover how to truly stand out.",
     image: "/images/re-folio.png", // Ensure this path is correct and the image is compelling
-    canonical: "https://re-folio.vercel.app", // Make sure this matches your actual domain
+    canonical: "https://re-folio-2.vercel.app", // Make sure this matches your actual domain
     robots: "index, follow",
     alternates: [{ href: "https://re-folio.vercel.app", hrefLang: "en-US" }],
   },
