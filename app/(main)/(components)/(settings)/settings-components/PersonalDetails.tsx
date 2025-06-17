@@ -38,13 +38,18 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
     try {
       const [{ data: userData }, { data: avatarData }, { data: navData }] =
         await Promise.all([
-          supabase.from("refolio_sections").select("username").eq("id", id).single(),
+          supabase
+            .from("refolio_sections")
+            .select("username")
+            .eq("id", id)
+            .single(),
           supabase.from("users").select("pfp").eq("id", id).single(),
           supabase.from("refolio_sections").select("nav").eq("id", id).single(),
         ]);
 
       if (userData?.username) setUsername(userData.username);
-      if (avatarData?.pfp) setPersonalDetails((prev) => ({ ...prev, pfp: avatarData.pfp }));
+      if (avatarData?.pfp)
+        setPersonalDetails((prev) => ({ ...prev, pfp: avatarData.pfp }));
       if (navData?.nav) setPersonalDetails(navData.nav);
     } catch (err) {
       console.error("Error fetching data:", err);
@@ -73,10 +78,14 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
       if (error) throw error;
 
       if (data?.can_change_username) {
-        setUsernameMessages("You can change your username only once. Please choose wisely.");
+        setUsernameMessages(
+          "You can change your username only once. Please choose wisely."
+        );
       } else {
         setUsernameConditions(false);
-        setUsernameMessages("Username change is disabled. You can only change it once.");
+        setUsernameMessages(
+          "Username change is disabled. You can only change it once."
+        );
       }
     } catch (err) {
       console.error("Error checking username change permission:", err);
@@ -93,8 +102,14 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
     setLoading(true);
     try {
       await Promise.all([
-        supabase.from("refolio_sections").update({ nav: personalDetails }).eq("id", id),
-        supabase.from("users").update({ pfp: personalDetails.pfp }).eq("id", id),
+        supabase
+          .from("refolio_sections")
+          .update({ nav: personalDetails })
+          .eq("id", id),
+        supabase
+          .from("users")
+          .update({ pfp: personalDetails.pfp })
+          .eq("id", id),
         changeUsername(username),
       ]);
       console.log("Personal details and avatar updated successfully");
@@ -113,7 +128,9 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
     if (!userId) return;
 
     try {
-      const fileName = `avatars/${sessionId}/${userId}-${Date.now()}-${file.name}`;
+      const fileName = `avatars/${sessionId}/${userId}-${Date.now()}-${
+        file.name
+      }`;
       const { data, error } = await supabase.storage
         .from("attachments")
         .upload(fileName, file);
@@ -134,11 +151,13 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
   };
 
   const changeUsername = async (usernameArgs: string) => {
+    usernameArgs = usernameArgs.trim();
     if (usernameArgs.includes(" ")) {
-      setUsernameMessages("Username should not contain spaces. Please choose another.");
+      setUsernameMessages(
+        "Username should not contain spaces. Please choose another."
+      );
       return;
     }
-
     try {
       const { data: existingUsernames, error: fetchError } = await supabase
         .from("refolio_sections")
@@ -151,7 +170,9 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
       );
 
       if (isUsernameTaken) {
-        setUsernameMessages("This username is already taken. Please choose another.");
+        setUsernameMessages(
+          "This username is already taken. Please choose another."
+        );
         return;
       }
 
@@ -181,7 +202,9 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
 
         setUsernameMessages("Username updated successfully!");
       } else {
-        setUsernameMessages("You can only change your username once. Please contact support.");
+        setUsernameMessages(
+          "You can only change your username once. Please contact support."
+        );
       }
     } catch (err) {
       console.error("Error changing username:", err);
