@@ -1,30 +1,36 @@
 "use client";
+
 import { Column, Flex, Text, useToast, Spinner } from "@once-ui-system/core";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import NavSettings from "../../(components)/(settings)/NavSettings";
-import "./../../../(main)/global.css";
 import IntroSettings from "../../(components)/(settings)/IntroSettings";
 import { supabase } from "@/app/lib/supabase";
-import { motion } from "framer-motion";
+import "./../../../(main)/global.css";
 
 export default function MePage() {
   const { addToast } = useToast();
   const [loading, setLoading] = useState(true);
-  const [id, setId] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data, error }) => {
-      if (error) {
-        console.error("Error fetching session:", error.message);
-      } else if (data.session) {
-        console.log("Successful");
-        setId(data.session.user.id);
+    const fetchSession = async () => {
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error("Error fetching session:", error.message);
+        } else if (data.session) {
+          console.log("Session fetched successfully");
+          setUserId(data.session.user.id);
+        }
+      } catch (err) {
+        console.error("Unexpected error:", err);
       }
-    });
+    };
 
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 3000); // Spinner will display for 3 seconds
+    fetchSession();
+
+    const timer = setTimeout(() => setLoading(false), 3000); // Spinner for 3 seconds
     return () => clearTimeout(timer);
   }, []);
 
@@ -39,43 +45,49 @@ export default function MePage() {
       data-theme="dark"
     >
       {loading ? (
-        <Column
-          maxWidth={37.5}
-          center
-          fillWidth
-          fillHeight
-          style={{ display: "flex" }}
-        >
-          <Spinner size="xl" />
-          <Flex fillWidth height={0.1} />
-          <Text variant="label-default-s" className="text-small">
-            loading your data...
-          </Text>
-        </Column>
+        <LoadingSpinner />
       ) : (
-        <Column
-          maxWidth={37.5}
-          center
-          fillWidth
-          fitHeight
-          className="body-container"
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            style={{ width: "100%" }}
-          >
-            {id ? (
-            <NavSettings id={id} />
-            ) : null}
-            <Space />
-          </motion.div>
-          <IntroSettings />
-        </Column>
+        <Content userId={userId} />
       )}
     </Column>
   );
 }
 
-const Space = () => <Flex fillWidth height={2.5}></Flex>;
+const LoadingSpinner = () => (
+  <Column
+    maxWidth={37.5}
+    center
+    fillWidth
+    fillHeight
+    style={{ display: "flex" }}
+  >
+    <Spinner size="xl" />
+    <Flex fillWidth height={0.1} />
+    <Text variant="label-default-s" className="text-small">
+      loading your data...
+    </Text>
+  </Column>
+);
+
+const Content = ({ userId }: { userId: string | null }) => (
+  <Column
+    maxWidth={37.5}
+    center
+    fillWidth
+    fitHeight
+    className="body-container"
+  >
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.1 }}
+      style={{ width: "100%" }}
+    >
+      {userId && <NavSettings id={userId} />}
+      <Space />
+    </motion.div>
+    <IntroSettings />
+  </Column>
+);
+
+const Space = () => <Flex fillWidth height={2.5} />;
