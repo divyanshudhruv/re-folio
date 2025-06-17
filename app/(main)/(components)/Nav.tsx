@@ -29,7 +29,7 @@ export default function Nav({ id }: { id: string }) {
       try {
         const { data, error } = await supabase
           .from("refolio_sections")
-          .select("nav")
+          .select("nav,name")
           .eq("username", id)
           .single();
 
@@ -38,10 +38,10 @@ export default function Nav({ id }: { id: string }) {
           return;
         }
 
-        if (data && data.nav) {
-          const navData = { ...data.nav, name: "" };
-          setUserData(navData);
+        if (data) {
+          setUserData(data.nav);
         }
+        
       } catch (err) {
         console.error("Unexpected error:", err);
       }
@@ -50,30 +50,7 @@ export default function Nav({ id }: { id: string }) {
     fetchUserData();
   }, [id]);
 
-  useEffect(() => {
-    const fetchUsername = async () => {
-      try {
-        const { data, error } = await supabase
-          .from("refolio_sections")
-          .select("name")
-          .eq("username", id)
-          .single();
-
-        if (error) {
-          console.error("Error fetching username:", error);
-          return;
-        }
-
-        if (data) {
-          setUserData((prev) => (prev ? { ...prev, name: data.name } : prev));
-        }
-      } catch (err) {
-        console.error("Unexpected error:", err);
-      }
-    };
-
-    fetchUsername();
-  }, [id]);
+  
   useEffect(() => {
     const fetchUserPfp = async () => {
       try {

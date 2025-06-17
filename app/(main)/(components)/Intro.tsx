@@ -40,8 +40,6 @@ export default function Intro({ id }: { id: string }) {
           return;
         }
         setIntroData(data.intro as IntroData);
-
-      
       } catch (err) {
         console.error("Unexpected error:", err);
       }
