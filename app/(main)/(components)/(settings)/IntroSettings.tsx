@@ -16,6 +16,7 @@ import ProjectSetting from "./settings-components/Projects";
 import SummarySetting from "./settings-components/Summary";
 import EducationSetting from "./settings-components/Education";
 import IntroductionSetting from "./settings-components/Introduction";
+import PasswordProtection from "./settings-components/PasswordProtection";
 import Footer from "../Footer";
 
 const inter = Inter({
@@ -53,6 +54,8 @@ export default function IntroSettings() {
       <AwardsSetting id={id!} />,
       <LanguagesSetting id={id!} />,
       <SummarySetting id={id!} />,
+      <PasswordProtection id={id!} />,
+
     ];
 
     return components.map((Component, index) => (
