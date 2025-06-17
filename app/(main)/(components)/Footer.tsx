@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Button,
-  Row,
-  SmartLink,
-  Text,
-} from "@once-ui-system/core";
+import { Button, Row, SmartLink, Text } from "@once-ui-system/core";
 import { Inter } from "next/font/google";
 import "./../global.css";
 
@@ -47,6 +42,9 @@ export default function Footer() {
           variant="secondary"
           size="m"
           style={{ backgroundColor: "#1c1c1c", padding: "5px 8px" }}
+          onClick={() =>
+            window.open("https://github.com/divyanshudhruv/re-folio", "_blank")
+          }
         >
           <Text variant="body-default-m" style={{ color: "#6B6B6B" }}>
             <i className="ri-github-line"></i>

@@ -189,7 +189,8 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
       const currentUser = existingUsernames.find((user) => user.id === id);
 
       if (currentUser?.username === usernameArgs) {
-        setUsernameMessages("Current username is already set.");
+        setUsernameMessages("Current username is already set. No worries!");
+        setUsernameConditions(false);
         return;
       }
 
