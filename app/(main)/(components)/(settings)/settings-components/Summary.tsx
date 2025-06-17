@@ -10,7 +10,7 @@ import {
   useToast,
 } from "@once-ui-system/core";
 import { Inter } from "next/font/google";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/app/lib/supabase";
 
 const inter = Inter({
@@ -20,9 +20,15 @@ const inter = Inter({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
+interface SocialLinks {
+  linkedin: string;
+  twitter: string;
+  github: string;
+}
+
 export default function SummarySetting({ id }: { id: string }) {
   const { addToast } = useToast();
-  const [socialLinks, setSocialLinks] = useState({
+  const [socialLinks, setSocialLinks] = useState<SocialLinks>({
     linkedin: "",
     twitter: "",
     github: "",
@@ -30,38 +36,47 @@ export default function SummarySetting({ id }: { id: string }) {
   const [paragraph, setParagraph] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    async function fetchData() {
+  const fetchData = useCallback(async () => {
+    try {
       const {
         data: { session },
       } = await supabase.auth.getSession();
-      if (session) {
-        if (!id) {
-          console.error("Invalid ID: ID is empty or undefined.");
-          return;
-        }
 
-        const { data, error } = await supabase
-          .from("refolio_sections")
-          .select("summary")
-          .eq("id", id)
-          .single();
-
-        if (error) {
-          console.error("Error fetching summary:", error.message);
-        } else if (data && data.summary) {
-          setSocialLinks(data.summary.socialLinks || {});
-          setParagraph(data.summary.paragraph || "");
-        }
-      } else {
+      if (!session) {
         console.log("No active session found.");
+        return;
       }
+
+      if (!id) {
+        console.error("Invalid ID: ID is empty or undefined.");
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("refolio_sections")
+        .select("summary")
+        .eq("id", id)
+        .single();
+
+      if (error) {
+        console.error("Error fetching summary:", error.message);
+        return;
+      }
+
+      if (data?.summary) {
+        setSocialLinks(data.summary.socialLinks || {});
+        setParagraph(data.summary.paragraph || "");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
+  }, [id]);
 
+  useEffect(() => {
     fetchData();
-  }, [id]); // Added dependency array to prevent repetitive rendering
+  }, [fetchData]);
 
-  async function handleSave() {
+  const handleSave = async () => {
     try {
       const summary = { socialLinks, paragraph };
       const { error } = await supabase
@@ -73,6 +88,11 @@ export default function SummarySetting({ id }: { id: string }) {
       if (error) {
         throw new Error(`Failed to save summary: ${error.message}`);
       }
+
+      // addToast({
+      //   variant: "success",
+      //   message: "Summary saved successfully!",
+      // });
     } catch (error: any) {
       console.error(error);
       addToast({
@@ -80,7 +100,11 @@ export default function SummarySetting({ id }: { id: string }) {
         message: `Failed to save summary: ${error.message}`,
       });
     }
-  }
+  };
+
+  const handleInputChange = (field: keyof SocialLinks, value: string) => {
+    setSocialLinks((prev) => ({ ...prev, [field]: value }));
+  };
 
   return (
     <Column fillWidth fitHeight gap="16">
@@ -101,9 +125,7 @@ export default function SummarySetting({ id }: { id: string }) {
             radius="top"
             hasPrefix={<i className="ri-linkedin-line text-big-darker"></i>}
             value={socialLinks.linkedin}
-            onChange={(e) =>
-              setSocialLinks({ ...socialLinks, linkedin: e.target.value })
-            }
+            onChange={(e) => handleInputChange("linkedin", e.target.value)}
           />
           <Input
             id="twitter"
@@ -111,9 +133,7 @@ export default function SummarySetting({ id }: { id: string }) {
             radius="none"
             hasPrefix={<i className="ri-twitter-x-line text-big-darker"></i>}
             value={socialLinks.twitter}
-            onChange={(e) =>
-              setSocialLinks({ ...socialLinks, twitter: e.target.value })
-            }
+            onChange={(e) => handleInputChange("twitter", e.target.value)}
           />
           <Input
             id="github"
@@ -121,9 +141,7 @@ export default function SummarySetting({ id }: { id: string }) {
             radius="none"
             hasPrefix={<i className="ri-github-line text-big-darker"></i>}
             value={socialLinks.github}
-            onChange={(e) =>
-              setSocialLinks({ ...socialLinks, github: e.target.value })
-            }
+            onChange={(e) => handleInputChange("github", e.target.value)}
           />
         </Column>
         <Textarea

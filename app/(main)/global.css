@@ -223,3 +223,16 @@
         justify-content: center !important;
     }
 }
+
+
+@media (max-width: 590px) {
+    .password-prompt-container {
+        max-width: 85vw !important;
+    }
+}
+
+
+input::-ms-reveal,
+input::-ms-clear {
+    display: none;
+}

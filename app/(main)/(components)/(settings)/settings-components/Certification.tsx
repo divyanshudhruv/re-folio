@@ -19,18 +19,25 @@ const inter = Inter({
     weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
+interface Certificate {
+    id: number;
+    title: string;
+    institution: string;
+    duration: string;
+    description: string;
+}
+
 export default function CertificationSetting({ id }: { id: string }) {
-    const [certificates, setCertificates] = useState([
+    const [certificates, setCertificates] = useState<Certificate[]>([
         { id: 1, title: "", institution: "", duration: "", description: "" },
     ]);
     const [sessionId, setSessionId] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        async function fetchData() {
-            const {
-                data: { session },
-            } = await supabase.auth.getSession();
+        const fetchData = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+
             if (session) {
                 setSessionId(session.user.id);
 
@@ -42,21 +49,21 @@ export default function CertificationSetting({ id }: { id: string }) {
 
                 if (error) {
                     console.error("Error fetching certificates:", error.message);
-                } else if (data && data.certificates) {
-                    setCertificates(data.certificates.map((cert: any, index: any) => ({ id: index + 1, ...cert })));
+                } else if (data?.certificates) {
+                    setCertificates(data.certificates.map((cert: any, index: number) => ({
+                        id: index + 1,
+                        ...cert,
+                    })));
                 }
             } else {
                 console.log("No active session found.");
             }
-        }
+        };
 
-        // Only fetch data if sessionId is null (to prevent repetitive rendering)
-        if (!sessionId) {
-            fetchData();
-        }
+        if (!sessionId) fetchData();
     }, [sessionId, id]);
 
-    async function handleSave() {
+    const handleSave = async () => {
         try {
             const updatedCertificates = certificates.map(({ id, ...rest }) => rest);
             const { error } = await supabase
@@ -65,38 +72,36 @@ export default function CertificationSetting({ id }: { id: string }) {
                 .eq("id", id)
                 .single();
 
-            if (error) {
-                throw new Error(`Failed to save certificates: ${error.message}`);
-            }
+            if (error) throw new Error(`Failed to save certificates: ${error.message}`);
 
             console.log("Certificates saved successfully!");
         } catch (error: any) {
             console.error(error);
         }
-    }
+    };
 
-    function newRow() {
+    const addRow = () => {
         if (certificates.length < 8) {
             setCertificates([
                 ...certificates,
                 { id: certificates.length + 1, title: "", institution: "", duration: "", description: "" },
             ]);
         }
-    }
+    };
 
-    function updateRow(id: number, field: string, value: string) {
+    const updateRow = (id: number, field: keyof Certificate, value: string) => {
         setCertificates((prevCertificates) =>
             prevCertificates.map((cert) =>
                 cert.id === id ? { ...cert, [field]: value } : cert
             )
         );
-    }
+    };
 
-    function deleteLastRow() {
+    const deleteLastRow = () => {
         if (certificates.length > 1) {
             setCertificates(certificates.slice(0, -1));
         }
-    }
+    };
 
     return (
         <Column fillWidth fitHeight gap="16">
@@ -134,9 +139,7 @@ export default function CertificationSetting({ id }: { id: string }) {
                                 label="Issuing Organization"
                                 height="s"
                                 value={cert.institution}
-                                onChange={(e) =>
-                                    updateRow(cert.id, "institution", e.target.value)
-                                }
+                                onChange={(e) => updateRow(cert.id, "institution", e.target.value)}
                             />
                             <Input
                                 radius="none"
@@ -153,14 +156,12 @@ export default function CertificationSetting({ id }: { id: string }) {
                                 placeholder="Tell us about your certification"
                                 description="Your certificates will be displayed on your public profile"
                                 value={cert.description}
-                                onChange={(e) =>
-                                    updateRow(cert.id, "description", e.target.value)
-                                }
-                            ></Textarea>
+                                onChange={(e) => updateRow(cert.id, "description", e.target.value)}
+                            />
                         </Column>
                     </Row>
                 ))}
-                <Flex height={1}> </Flex>
+                <Flex height={1} />
                 <Row fillWidth horizontal="end" vertical="center" gap="8">
                     <Button
                         variant="secondary"
@@ -171,19 +172,19 @@ export default function CertificationSetting({ id }: { id: string }) {
                     </Button>
                     <Button
                         variant="secondary"
-                        onClick={newRow}
+                        onClick={addRow}
                         disabled={certificates.length >= 5}
                     >
                         Add
                     </Button>
-                    <Button 
-                        variant="primary" 
+                    <Button
+                        variant="primary"
                         data-theme="dark"
                         onClick={async () => {
                             setLoading(true);
                             await handleSave();
                             setLoading(false);
-                        }} 
+                        }}
                         disabled={loading}
                     >
                         {loading ? "Saving..." : "Save"}

@@ -2,22 +2,33 @@
 
 import { Column, Text, Media, Grid, Card, Flex } from "@once-ui-system/core";
 import { Inter } from "next/font/google";
+import { useState, useEffect } from "react";
+import { supabase } from "@/app/lib/supabase";
+import "./../global.css";
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
-import "./../global.css";
-import { supabase } from "@/app/lib/supabase";
-import { useState, useEffect } from "react";
-export default function Projects({ id }: { id: string }) {
-  const [projectsData, setProjectsData] = useState<
-    { title: string; description: string; src: string; href: string }[]
-  >([]);
+
+interface Project {
+  title: string;
+  description: string;
+  src: string;
+  href: string;
+}
+
+interface ProjectsProps {
+  id: string;
+}
+
+const Projects = ({ id }: ProjectsProps) => {
+  const [projectsData, setProjectsData] = useState<Project[]>([]);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchProjects = async () => {
       try {
         const { data, error } = await supabase
           .from("refolio_sections")
@@ -27,7 +38,7 @@ export default function Projects({ id }: { id: string }) {
 
         if (error) {
           console.error("Error fetching data:", error);
-        } else {
+        } else if (data?.projects) {
           setProjectsData(data.projects);
         }
       } catch (err) {
@@ -35,94 +46,84 @@ export default function Projects({ id }: { id: string }) {
       }
     };
 
-    fetchData();
+    fetchProjects();
   }, [id]);
-  const projects = projectsData;
+
+  const hasValidProjects = projectsData.some((project) =>
+    Object.keys(project).some(
+      (key) => key !== "id" && project[key as keyof Project]
+    )
+  );
+
   return (
     <>
-      {projects.length > 0 && projects.some(project => 
-        Object.keys(project).some((key) => key !== "id" && project[key as keyof typeof project])
-      ) && (
+      {projectsData.length > 0 && hasValidProjects && (
         <>
-        <Column fillWidth fitHeight paddingX="s" gap="16">
-          <Text
-            variant="heading-strong-xs"
-            onBackground="neutral-medium"
-            className={inter.className}
-          >
-            Projects
-          </Text>
+          <Column fillWidth fitHeight paddingX="s" gap="16">
+            <Text
+              variant="heading-strong-xs"
+              onBackground="neutral-medium"
+              className={inter.className}
+            >
+              Projects
+            </Text>
 
-          <Grid columns={2} fillWidth gap="16" className="responsive-container">
-            {projects.map((project, index) => (
-              <ProjectCard
-                key={index}
-                src={project.src}
-                title={project.title}
-                description={project.description}
-                href={project.href}
-              />
-            ))}
-          </Grid>
-        </Column>
-         <Flex fillWidth height={2.5}></Flex></>
+            <Grid columns={2} fillWidth gap="16" className="responsive-container">
+              {projectsData.map((project, index) => (
+                <ProjectCard key={index} {...project} />
+              ))}
+            </Grid>
+          </Column>
+          <Flex fillWidth height={2.5}></Flex>
+        </>
       )}
     </>
   );
-}
+};
 
-const ProjectCard = ({
-  src,
-  title,
-  description,
-  href,
-}: {
+interface ProjectCardProps {
   src: string;
   title: string;
   description: string;
   href?: string;
-}) => {
-  return (
-    <Card
-      radius="l"
-      padding="xs"
-      background="transparent"
-      fillWidth
-      style={{
-        minHeight: "100px !important",
-        borderWidth: "0",
-      }}
-      onClick={() => {
-        if (href) {
-          window.open(href, "_blank", "noopener noreferrer")?.focus();
-        }
-      }}
-    >
-      <Column fillWidth fitHeight gap="12">
-        <Flex border="neutral-alpha-weak" radius="l" overflow="hidden">
-          <Media
-            src={src}
-            unoptimized
-            aspectRatio="16/10"
-            objectFit="cover"
-            fillWidth
-            fillHeight
-            className="responsive-image"
-          ></Media>
-        </Flex>
-        <Column style={{ paddingInline: "5px !important" }}>
-          <Text className={inter.className + " text-massive-lighter"}>
-            {title}
-          </Text>
-          <Text
-            variant="label-default-s"
-            onBackground="neutral-weak"
-            className={inter.className + " text-big-darker"}
-          >
-            {description}
-          </Text>
-        </Column>
+}
+
+const ProjectCard = ({ src, title, description, href }: ProjectCardProps) => (
+  <Card
+    radius="l"
+    padding="xs"
+    background="transparent"
+    fillWidth
+    style={{
+      minHeight: "100px !important",
+      borderWidth: "0",
+    }}
+    onClick={() => href && window.open(href, "_blank", "noopener noreferrer")?.focus()}
+  >
+    <Column fillWidth fitHeight gap="12">
+      <Flex border="neutral-alpha-weak" radius="l" overflow="hidden">
+        <Media
+          src={src}
+          unoptimized
+          aspectRatio="16/10"
+          objectFit="cover"
+          fillWidth
+          fillHeight
+          className="responsive-image"
+        />
+      </Flex>
+      <Column style={{ paddingInline: "5px !important" }}>
+        <Text className={`${inter.className} text-massive-lighter`}>{title}</Text>
+        <Text
+          variant="label-default-s"
+          onBackground="neutral-weak"
+          className={`${inter.className} text-big-darker`}
+        >
+          {description}
+        </Text>
       </Column>
-    </Card>
-  );
-};
+    </Column>
+  </Card>
+);
+
+export default Projects;
