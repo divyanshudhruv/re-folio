@@ -1,31 +1,38 @@
 "use client";
 
 import { Column, Flex, IconButton, Row, Text } from "@once-ui-system/core";
-import { Inter } from "next/font/google";
+import { Inter, Cedarville_Cursive } from "next/font/google";
+import { useState, useEffect } from "react";
+import React from "react";
+import { supabase } from "@/app/lib/supabase";
+import "./../global.css";
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
-import { Cedarville_Cursive } from "next/font/google";
+
 const cedarvilleCursive = Cedarville_Cursive({
   subsets: ["latin"],
   variable: "--font-cedarville-cursive",
   display: "swap",
   weight: ["400"],
 });
-import "./../global.css";
-import { supabase } from "@/app/lib/supabase";
-import { useState, useEffect } from "react";
-import React from "react";
 
-export default function Summary({ id }: { id: string }) {
-  const [socialLinks, setSocialLinks] = useState<{
-    linkedin?: string;
-    twitter?: string;
-    github?: string;
-  }>({});
+interface SocialLinksProps {
+  linkedin?: string;
+  twitter?: string;
+  github?: string;
+}
+
+interface SummaryProps {
+  id: string;
+}
+
+export default function Summary({ id }: SummaryProps) {
+  const [socialLinks, setSocialLinks] = useState<SocialLinksProps>({});
   const [paragraph, setParagraph] = useState<string>("");
   const [name, setName] = useState<string>("");
 
@@ -40,14 +47,15 @@ export default function Summary({ id }: { id: string }) {
 
         if (error) {
           console.error("Error fetching data:", error);
+          return;
+        }
+
+        if (data?.summary) {
+          setSocialLinks(data.summary.socialLinks || {});
+          setParagraph(data.summary.paragraph || "");
+          setName(data.name || "User");
         } else {
-          if (data.summary) {
-            setSocialLinks(data.summary.socialLinks || {});
-            setParagraph(data.summary.paragraph || "");
-            setName(data.name || "User");
-          } else {
-            console.error("Summary data is undefined");
-          }
+          console.error("Summary data is undefined");
         }
       } catch (err) {
         console.error("Unexpected error:", err);
@@ -59,70 +67,51 @@ export default function Summary({ id }: { id: string }) {
 
   return (
     <>
-    <Column fillWidth fitHeight paddingX="s" gap="16">
-      <Text
-        variant="heading-strong-xs"
-        onBackground="neutral-medium"
-        className={inter.className}
-      >
-        Summary
-      </Text>
-      <Text
-        className={
-          inter.className + " text-paragraph text-responsive-paragraph"
-        }
-      >
-        {paragraph.split("\n").map((line, index) => (
-          <React.Fragment key={index}>
-            {line}
-            <br />
-          </React.Fragment>
-        ))}
-      </Text>
-      <Flex></Flex>
-      <Row vertical="center" horizontal="space-between" fillWidth fitHeight>
-        <SocialLinks links={socialLinks} />
-        <Text className={cedarvilleCursive.className + " text-signature"}>
-          {name}
+      <Column fillWidth fitHeight paddingX="s" gap="16">
+        <Text
+          variant="heading-strong-xs"
+          onBackground="neutral-medium"
+          className={inter.className}
+        >
+          Summary
         </Text>
-      </Row>
-    </Column>
-     <Flex fillWidth height={2.5}></Flex></>
+        <Text
+          className={`${inter.className} text-paragraph text-responsive-paragraph`}
+        >
+          {paragraph.split("\n").map((line, index) => (
+            <React.Fragment key={index}>
+              {line}
+              <br />
+            </React.Fragment>
+          ))}
+        </Text>
+        <Flex />
+        <Row vertical="center" horizontal="space-between" fillWidth fitHeight>
+          <SocialLinks links={socialLinks} />
+          <Text className={`${cedarvilleCursive.className} text-signature`}>
+            {name}
+          </Text>
+        </Row>
+      </Column>
+      <Flex fillWidth height={2.5} />
+    </>
   );
 }
 
-function SocialLinks({
-  links,
-}: {
-  links: {
-    linkedin?: string;
-    twitter?: string;
-    github?: string;
-  };
-}) {
+function SocialLinks({ links }: { links: SocialLinksProps }) {
+  const renderIconButton = (href: string, iconClass: string) => (
+    <IconButton variant="secondary" href={href}>
+      <Text className="text-big-darker">
+        <i className={iconClass}></i>
+      </Text>
+    </IconButton>
+  );
+
   return (
     <Flex gap="8" center fitWidth fitHeight>
-      {links.linkedin && (
-        <IconButton variant="secondary" href={links.linkedin}>
-          <Text className="text-big-darker">
-            <i className="ri-linkedin-line"></i>
-          </Text>
-        </IconButton>
-      )}
-      {links.twitter && (
-        <IconButton variant="secondary" href={links.twitter}>
-          <Text className="text-big-darker">
-            <i className="ri-twitter-x-line"></i>
-          </Text>
-        </IconButton>
-      )}
-      {links.github && (
-        <IconButton variant="secondary" href={links.github}>
-          <Text className="text-big-darker">
-            <i className="ri-github-line"></i>
-          </Text>
-        </IconButton>
-      )}
+      {links.linkedin && renderIconButton(links.linkedin, "ri-linkedin-line")}
+      {links.twitter && renderIconButton(links.twitter, "ri-twitter-x-line")}
+      {links.github && renderIconButton(links.github, "ri-github-line")}
     </Flex>
   );
 }

@@ -12,6 +12,7 @@ import {
 import { Inter } from "next/font/google";
 import { supabase } from "@/app/lib/supabase";
 import { useState, useEffect } from "react";
+import "./../global.css";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -19,12 +20,20 @@ const inter = Inter({
   display: "swap",
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
-import "./../global.css";
 
-export default function Experience({ id }: { id: string }) {
-  const [experiences, setExperiences] = useState<
-    { src: string; title: string; company: string; duration: string }[]
-  >([]);
+interface ExperienceProps {
+  id: string;
+}
+
+interface ExperienceData {
+  src: string;
+  title: string;
+  company: string;
+  duration: string;
+}
+
+export default function Experience({ id }: ExperienceProps) {
+  const [experiences, setExperiences] = useState<ExperienceData[]>([]);
 
   useEffect(() => {
     const fetchExperiences = async () => {
@@ -37,7 +46,10 @@ export default function Experience({ id }: { id: string }) {
 
         if (error) {
           console.error("Error fetching experiences:", error);
-        } else {
+          return;
+        }
+
+        if (data?.experiences) {
           setExperiences(data.experiences);
         }
       } catch (err) {
@@ -47,14 +59,19 @@ export default function Experience({ id }: { id: string }) {
 
     fetchExperiences();
   }, [id]);
+
+  const hasValidExperiences = experiences.some(
+    (experience) =>
+      experience.title &&
+      experience.company &&
+      experience.duration &&
+      experience.src
+  );
+
   return (
     <>
-      {experiences.length > 0 &&
-        experiences.some(
-          (experience) =>
-            experience.title && experience.company && experience.duration && experience.src
-        ) && (
-          <>
+      {experiences.length > 0 && hasValidExperiences && (
+        <>
           <Column fillWidth fitHeight paddingX="s" gap="16">
             <Text
               variant="heading-strong-xs"
@@ -71,75 +88,64 @@ export default function Experience({ id }: { id: string }) {
               className="responsive-container"
             >
               {experiences.map((experience, index) => (
-                <ExperienceCard
-                  src={experience.src}
-                  key={index}
-                  title={experience.title}
-                  company={experience.company}
-                  duration={experience.duration}
-                />
+                <ExperienceCard key={index} {...experience} />
               ))}
             </Grid>
           </Column>
-           <Flex fillWidth height={2.5}></Flex></>
-        )}
+          <Flex fillWidth height={2.5}></Flex>
+        </>
+      )}
     </>
   );
 }
+
+interface ExperienceCardProps extends ExperienceData {}
 
 const ExperienceCard = ({
   title,
   company,
   duration,
   src,
-}: {
-  title: string;
-  company: string;
-  duration: string;
-  src: string;
-}) => {
-  return (
-    <Card
-      radius="l-4"
-      direction="row"
-      border="neutral-alpha-weak"
-      background="surface"
-      padding="m"
-      vertical="center"
-      fillWidth
-      flex={1}
-      style={{
-        backgroundColor: "#1C1C1C ",
-        minHeight: "100px !important",
-      }}
-    >
-      <Row gap="12">
-        <Column horizontal="center" vertical="start" fillHeight fitWidth>
-          <Media width={2} height={2} radius="l" src={src} unoptimized></Media>
-        </Column>
-        <Column horizontal="start" vertical="start" gap="2" fillHeight>
-          <Text
-            variant="label-default-s"
-            className={inter.className + " text-big-lighter"}
-          >
-            {title}
-          </Text>
-
-          <Text
-            variant="label-default-s"
-            className={inter.className + " text-big-darker"}
-          >
-            {company}
-          </Text>
-          <Flex fillWidth height={0.025}></Flex>
-          <Text
-            variant="label-default-s"
-            className={inter.className + " text-small"}
-          >
-            {duration}
-          </Text>
-        </Column>
-      </Row>
-    </Card>
-  );
-};
+}: ExperienceCardProps) => (
+  <Card
+    radius="l-4"
+    direction="row"
+    border="neutral-alpha-weak"
+    background="surface"
+    padding="m"
+    vertical="center"
+    fillWidth
+    flex={1}
+    style={{
+      backgroundColor: "#1C1C1C",
+      minHeight: "100px",
+    }}
+  >
+    <Row gap="12">
+      <Column horizontal="center" vertical="start" fillHeight fitWidth>
+        <Media width={2} height={2} radius="l" src={src} unoptimized />
+      </Column>
+      <Column horizontal="start" vertical="start" gap="2" fillHeight>
+        <Text
+          variant="label-default-s"
+          className={`${inter.className} text-big-lighter`}
+        >
+          {title}
+        </Text>
+        <Text
+          variant="label-default-s"
+          className={`${inter.className} text-big-darker`}
+        >
+          {company}
+        </Text>
+        <Flex fillWidth height={0.025}></Flex>
+        <Text
+          variant="label-default-s"
+          className={`${inter.className} text-small`}
+        >
+          {duration}
+        </Text>
+      </Column>
+    </Row>
+  </Card>
+);
