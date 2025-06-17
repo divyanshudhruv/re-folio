@@ -6,8 +6,9 @@ import {
   Spinner,
   Text,
   Button,
-  Input,
   PasswordInput,
+  Kbd,
+  Row,
 } from "@once-ui-system/core";
 import { motion } from "framer-motion";
 import React, { useState, useEffect, useCallback } from "react";
@@ -39,49 +40,41 @@ export default function Home() {
   const [state, setState] = useState({
     username: "",
     loading: true,
-    loadingIntermediate: true,
     isPasswordProtected: false,
     password: "",
     isAuthenticated: false,
-    isAuthenticatedLoading: false,
-    correctPassword: "",
     error: false,
     errorMessage: "",
-    buttonText: "Submit",
-    buttonDisabled: false,
   });
 
   const {
     username,
     loading,
-    loadingIntermediate,
     isPasswordProtected,
     password,
     isAuthenticated,
-    isAuthenticatedLoading,
-    correctPassword,
     error,
     errorMessage,
-    buttonText,
-    buttonDisabled,
   } = state;
+  const [submitText, setSubmitText] = useState("Submit");
+  const [isSubmitDisabled, setIsSubmitDisabled] = useState(false);
+  const [authorUserSlugDescription, setAuthorUserSlugDescription] =
+    useState("");
 
   useEffect(() => {
     const userSlug =
       window.location.pathname.split("/").pop()?.replace(/^@/, "") || "";
-    setState((prev) => ({
-      ...prev,
-      username: userSlug,
-      loadingIntermediate: false,
-    }));
+    setState((prev) => ({ ...prev, username: userSlug }));
 
     fetchPasswordProtection(userSlug);
+    setAuthorUserSlugDescription(userSlug);
   }, []);
 
+  // Time for Spinner to simulate loading
   useEffect(() => {
     const timer = setTimeout(() => {
       setState((prev) => ({ ...prev, loading: false }));
-    }, 5000);
+    }, 3000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -102,59 +95,72 @@ export default function Home() {
         setState((prev) => ({
           ...prev,
           isPasswordProtected: data.is_password_protected,
-          correctPassword: data.refolio_password,
         }));
+
+        if (!data.is_password_protected || !data.refolio_password) {
+          setTimeout(() => {
+            setState((prev) => ({ ...prev, isAuthenticated: true }));
+          }, 500);
+        }
       }
     } catch (err) {
       console.error("Unexpected error:", err);
     }
   }, []);
 
-  const handlePasswordSubmit = () => {
-    setState((prev) => ({
-      ...prev,
-      buttonDisabled: true,
-      buttonText: "Checking...",
-    }));
+  const handlePasswordSubmit = async () => {
+    setSubmitText("Submitting...");
+    setIsSubmitDisabled(true);
+    try {
+      const { data, error } = await supabase
+        .from("refolio_sections")
+        .select("refolio_password")
+        .eq("username", username)
+        .single();
 
-    setTimeout(() => {
-      if (password === correctPassword) {
+      if (error) {
+        console.error("Error fetching password:", error);
+        setState((prev) => ({
+          ...prev,
+          error: true,
+          errorMessage: "An error occurred. Please try again.",
+        }));
+        return;
+      }
+
+      if (data && password === data.refolio_password) {
         setState((prev) => ({
           ...prev,
           error: false,
           errorMessage: "",
-          isAuthenticatedLoading: true,
+          isAuthenticated: true,
         }));
-
-        setTimeout(() => {
-          setState((prev) => ({
-            ...prev,
-            isAuthenticated: true,
-            isAuthenticatedLoading: false,
-          }));
-        }, 3000);
       } else {
         setState((prev) => ({
           ...prev,
           error: true,
           errorMessage: "Incorrect password. Please try again.",
-          isAuthenticated: false,
           password: "",
         }));
       }
+    } catch (err) {
+      console.error("Unexpected error:", err);
       setState((prev) => ({
         ...prev,
-        buttonText: "Submit",
-        buttonDisabled: false,
+        error: true,
+        errorMessage: "An unexpected error occurred. Please try again.",
       }));
-    }, 2000);
+    } finally {
+      setSubmitText("Submit");
+      setIsSubmitDisabled(false);
+    }
   };
 
   const renderPasswordPrompt = () => (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 1, duration: 0.5 }}
+      transition={{ delay: 0, duration: 0.5 }}
       className="password-prompt-container"
       style={{
         display: !isAuthenticated ? "flex" : "none",
@@ -175,26 +181,52 @@ export default function Home() {
         fillHeight
         gap="4"
       >
-        <Text
-          variant="heading-strong-xl"
-          className={`${inter.className} text-responsive-heading`}
-          style={{
-            lineHeight: "1.4",
-            fontSize: "30px",
-            letterSpacing: "-0.1px",
-            color: "#ddd",
-          }}
-        >
-          Password Protected
-        </Text>
+        {authorUserSlugDescription === "divyanshudhruv" ? (
+          <Text
+            variant="heading-strong-xl"
+            className={`${inter.className} text-responsive-heading`}
+            style={{
+              lineHeight: "1.4",
+              fontSize: "30px",
+              letterSpacing: "-0.1px",
+              color: "#ddd",
+            }}
+          >
+            <Row vertical="center">
+              {" "}
+              Password Protected&nbsp;
+              <Kbd
+                background="accent-medium"
+                border="accent-medium"
+                onBackground="accent-weak"
+                height={1.3}
+              >
+                Creator
+              </Kbd>
+            </Row>
+          </Text>
+        ) : (
+          <Text
+            variant="heading-strong-xl"
+            className={`${inter.className} text-responsive-heading`}
+            style={{
+              lineHeight: "1.4",
+              fontSize: "30px",
+              letterSpacing: "-0.1px",
+              color: "#ddd",
+            }}
+          >
+            Password Protected
+          </Text>
+        )}
+
         <Text variant="label-default-s" className="text-big-darker">
           Please enter the password to access this page.
         </Text>
         <Flex fillWidth height={0.5} />
         <PasswordInput
-          type="text"
-          name="fakeusernameremembered"
           id=""
+          type="text"
           placeholder="Enter password"
           className="password-input"
           value={password}
@@ -203,10 +235,17 @@ export default function Home() {
           }
           error={error}
           errorMessage={errorMessage}
+          description={
+            authorUserSlugDescription === "divyanshudhruv" ? (
+              <Text className="text-small">
+                The password is <b className="text-small-lighter">ax8dr</b>
+              </Text>
+            ) : null
+          }
         />
         <Flex fillWidth height={0.5} />
-        <Button onClick={handlePasswordSubmit} disabled={buttonDisabled}>
-          {buttonText}
+        <Button onClick={handlePasswordSubmit} disabled={isSubmitDisabled}>
+          {submitText}
         </Button>
       </Column>
     </motion.div>
@@ -277,14 +316,12 @@ export default function Home() {
       vertical="start"
       data-theme="dark"
     >
-      {loadingIntermediate && renderLoadingState("checking security...")}
-      {!loadingIntermediate &&
+      {loading && renderLoadingState("checking security...")}
+      {!loading &&
         isPasswordProtected &&
         !isAuthenticated &&
-        !isAuthenticatedLoading &&
         renderPasswordPrompt()}
-      {isAuthenticatedLoading && renderLoadingState(`loading ${username}...`)}
-      {!loadingIntermediate && isAuthenticated && renderContent()}
+      {!loading && isAuthenticated && renderContent()}
     </Column>
   );
 }
