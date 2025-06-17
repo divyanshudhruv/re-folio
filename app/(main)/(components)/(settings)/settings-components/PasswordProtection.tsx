@@ -27,6 +27,8 @@ export default function PasswordProtection({ id }: { id: string }) {
   const [isPasswordProtected, setIsPasswordProtected] =
     useState<boolean>(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [error, setError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const fetchPassword = useCallback(async () => {
     if (!id) {
@@ -70,21 +72,19 @@ export default function PasswordProtection({ id }: { id: string }) {
   useEffect(() => {
     setIsChecked(isPasswordProtected);
   }, [isPasswordProtected]);
-
   const handleUpdate = async () => {
     if (!id) {
       console.error("Invalid ID: ID is empty or undefined.");
       return;
     }
 
-    if (isChecked && !password) {
-      addToast({
-        variant: "danger",
-        message:
-          "Password cannot be empty when password protection is enabled.",
-      });
+    const trimmedPassword = password.trim();
+    if (isChecked && !trimmedPassword) {
+      setError(true);
+      setErrorMessage("Password cannot be empty when enabling protection.");
       return;
     }
+    setPassword(trimmedPassword);
 
     try {
       const { error } = await supabase
@@ -102,10 +102,12 @@ export default function PasswordProtection({ id }: { id: string }) {
         );
       }
 
-      addToast({
-        message: "Password protection updated successfully.",
-        variant: "success",
-      });
+      setError(false);
+      setErrorMessage("Password updated successfully.");
+      // addToast({
+      //     variant: "success",
+      //     message: "Password protection updated successfully.",
+      // });
     } catch (error) {
       console.error(error);
       addToast({
@@ -141,6 +143,8 @@ export default function PasswordProtection({ id }: { id: string }) {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter your password"
             height="m"
+            error={error}
+            errorMessage={errorMessage}
           />
         )}
         <Row fillWidth horizontal="end" vertical="center" gap="8">
