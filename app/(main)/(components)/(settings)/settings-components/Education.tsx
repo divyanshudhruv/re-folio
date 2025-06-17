@@ -18,16 +18,26 @@ const inter = Inter({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
+interface EducationDetail {
+  id: number;
+  title: string;
+  duration: string;
+  description: string;
+  institution: string;
+}
+
+const defaultEducationDetail: EducationDetail = {
+  id: 1,
+  title: "",
+  duration: "",
+  description: "",
+  institution: "",
+};
+
 export default function EducationSetting({ id }: { id: string }) {
-  const [educationDetails, setEducationDetails] = useState<
-    {
-      id: number;
-      title: string;
-      duration: string;
-      description: string;
-      institution: string;
-    }[]
-  >([]);
+  const [educationDetails, setEducationDetails] = useState<EducationDetail[]>([
+    { ...defaultEducationDetail },
+  ]);
   const [loading, setLoading] = useState(false);
 
   const fetchEducationDetails = useCallback(async () => {
@@ -38,17 +48,14 @@ export default function EducationSetting({ id }: { id: string }) {
         .eq("id", id)
         .single();
 
-      if (!data?.education) {
-        setEducationDetails([
-          { id: 1, title: "", duration: "", description: "", institution: "" },
-        ]);
-      }
-
       if (error) {
         console.error("Error fetching education details:", error);
-      } else if (data?.education) {
-        setEducationDetails(data.education);
+        return;
       }
+
+      setEducationDetails(
+        data?.education?.length ? data.education : [{ ...defaultEducationDetail }]
+      );
     } catch (err) {
       console.error("Unexpected error:", err);
     }
@@ -60,7 +67,6 @@ export default function EducationSetting({ id }: { id: string }) {
 
   const handleSave = async () => {
     setLoading(true);
-    console.log(educationDetails);
     try {
       const { error } = await supabase
         .from("refolio_sections")
@@ -80,7 +86,7 @@ export default function EducationSetting({ id }: { id: string }) {
   };
 
   const handleChange = useCallback(
-    (id: number, field: string, value: string | string[]) => {
+    (id: number, field: keyof EducationDetail, value: string) => {
       setEducationDetails((prev) =>
         prev.map((item) =>
           item.id === id ? { ...item, [field]: value } : item
@@ -91,21 +97,72 @@ export default function EducationSetting({ id }: { id: string }) {
   );
 
   const handleAdd = useCallback(() => {
-    const newEntry = {
-      id: educationDetails.length + 1,
-      title: "",
-      duration: "",
-      description: "",
-      institution: "",
-    };
-    setEducationDetails((prev) => [...prev, newEntry]);
-  }, [educationDetails]);
+    setEducationDetails((prev) => [
+      ...prev,
+      { ...defaultEducationDetail, id: prev.length + 1 },
+    ]);
+  }, []);
 
   const removeLastItem = useCallback(() => {
-    if (educationDetails.length > 1) {
-      setEducationDetails((prev) => prev.slice(0, -1));
-    }
-  }, [educationDetails]);
+    setEducationDetails((prev) =>
+      prev.length > 1 ? prev.slice(0, -1) : prev
+    );
+  }, []);
+
+  const renderEducationFields = () =>
+    educationDetails.map((education, index) => (
+      <Row key={education.id} gap="16" fillWidth>
+        <Text
+          variant="heading-default-xs"
+          onBackground="neutral-weak"
+          className={inter.className}
+        >
+          {index + 1}.
+        </Text>
+        <Column fillWidth>
+          <Input
+            radius="top"
+            id={`input-title-${education.id}`}
+            label="Level"
+            height="s"
+            value={education.title}
+            onChange={(e) =>
+              handleChange(education.id, "title", e.target.value)
+            }
+          />
+          <Input
+            radius="none"
+            id={`input-institution-${education.id}`}
+            label="Name of institute"
+            height="s"
+            value={education.institution}
+            onChange={(e) =>
+              handleChange(education.id, "institution", e.target.value)
+            }
+          />
+          <Input
+            radius="none"
+            id={`input-duration-${education.id}`}
+            label="Year"
+            height="s"
+            value={education.duration}
+            onChange={(e) =>
+              handleChange(education.id, "duration", e.target.value)
+            }
+          />
+          <Textarea
+            lines={6}
+            id={`textarea-description-${education.id}`}
+            radius="bottom"
+            placeholder="Tell us about your education"
+            value={education.description}
+            onChange={(e) =>
+              handleChange(education.id, "description", e.target.value)
+            }
+          />
+        </Column>
+      </Row>
+    ));
 
   return (
     <Column fillWidth fitHeight gap="16">
@@ -119,59 +176,7 @@ export default function EducationSetting({ id }: { id: string }) {
         </Text>
       </HeadingLink>
       <Column gap="16">
-        {educationDetails.map((education, index) => (
-          <Row key={`${education.id}-${index}`} gap="16" fillWidth>
-            <Text
-              variant="heading-default-xs"
-              onBackground="neutral-weak"
-              className={inter.className}
-            >
-              {index + 1}. {/* Numbering */}
-            </Text>
-            <Column fillWidth>
-              <Input
-                radius="top"
-                id={`input-title-${education.id}`}
-                label="Level"
-                height="s"
-                value={education.title}
-                onChange={(e) =>
-                  handleChange(education.id, "title", e.target.value)
-                }
-              />
-              <Input
-                radius="none"
-                id={`input-institution-${education.id}`}
-                label="Name of institute"
-                height="s"
-                value={education.institution}
-                onChange={(e) =>
-                  handleChange(education.id, "institution", e.target.value)
-                }
-              />
-              <Input
-                radius="none"
-                id={`input-duration-${education.id}`}
-                label="Year "
-                height="s"
-                value={education.duration}
-                onChange={(e) =>
-                  handleChange(education.id, "duration", e.target.value)
-                }
-              />
-              <Textarea
-                lines={6}
-                id={`textarea-description-${education.id}`}
-                radius="bottom"
-                placeholder="Tell us about your education"
-                value={education.description}
-                onChange={(e) =>
-                  handleChange(education.id, "description", e.target.value)
-                }
-              ></Textarea>
-            </Column>
-          </Row>
-        ))}
+        {renderEducationFields()}
         <Row fillWidth horizontal="end" vertical="center" gap="8">
           <Button variant="secondary" onClick={removeLastItem}>
             Remove last
@@ -185,11 +190,9 @@ export default function EducationSetting({ id }: { id: string }) {
           </Button>
           <Button
             variant="primary"
-            onClick={async () => {
-              handleSave();
-            }}                        data-theme="dark"
-
+            onClick={handleSave}
             disabled={loading}
+            data-theme="dark"
           >
             {loading ? "Saving..." : "Save"}
           </Button>

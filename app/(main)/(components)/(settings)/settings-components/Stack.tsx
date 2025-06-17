@@ -19,16 +19,23 @@ const inter = Inter({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
+interface RowData {
+  id: number;
+  src: string;
+  name: string;
+  description: string;
+}
+
 export default function StackSetting({ id }: { id: string }) {
   const { addToast } = useToast();
-  const [rows, setRows] = useState([
+  const [rows, setRows] = useState<RowData[]>([
     { id: 1, src: "", name: "", description: "" },
   ]);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    async function fetchSession() {
+    const fetchSession = async () => {
       const {
         data: { session },
       } = await supabase.auth.getSession();
@@ -38,13 +45,13 @@ export default function StackSetting({ id }: { id: string }) {
       } else {
         console.log("No active session found.");
       }
-    }
+    };
 
     fetchSession();
-  }, []); // Runs only once when the component mounts
+  }, []);
 
   useEffect(() => {
-    async function fetchStacks() {
+    const fetchStacks = async () => {
       if (!sessionId) return;
 
       const { data, error } = await supabase
@@ -55,15 +62,15 @@ export default function StackSetting({ id }: { id: string }) {
 
       if (error) {
         console.error("Error fetching stacks:", error.message);
-      } else if (data && data.stacks) {
+      } else if (data?.stacks) {
         setRows(data.stacks);
       }
-    }
+    };
 
     fetchStacks();
-  }, [sessionId, id]); // Runs only when sessionId or id changes
+  }, [sessionId, id]);
 
-  async function handleFileUpload(rowId: number, file: File) {
+  const handleFileUpload = async (rowId: number, file: File) => {
     if (!sessionId) return;
 
     try {
@@ -72,18 +79,14 @@ export default function StackSetting({ id }: { id: string }) {
         .from("attachments")
         .upload(fileName, file);
 
-      if (error) {
-        throw new Error(
-          `Failed to upload file for row ${rowId}: ${error.message}`
-        );
-      }
+      if (error) throw new Error(`Failed to upload file: ${error.message}`);
 
       const { data: publicUrlData } = supabase.storage
         .from("attachments")
         .getPublicUrl(data.path);
 
       if (!publicUrlData.publicUrl) {
-        throw new Error(`Failed to get public URL for row ${rowId}`);
+        throw new Error("Failed to get public URL");
       }
 
       setRows((prevRows) =>
@@ -98,9 +101,9 @@ export default function StackSetting({ id }: { id: string }) {
         message: `Failed to upload file: ${error.message}`,
       });
     }
-  }
+  };
 
-  async function handleSave() {
+  const handleSave = async () => {
     try {
       const { error } = await supabase
         .from("refolio_sections")
@@ -108,9 +111,7 @@ export default function StackSetting({ id }: { id: string }) {
         .eq("id", id)
         .single();
 
-      if (error) {
-        throw new Error(`Failed to save stacks: ${error.message}`);
-      }
+      if (error) throw new Error(`Failed to save stacks: ${error.message}`);
     } catch (error: any) {
       console.error(error);
       addToast({
@@ -118,28 +119,30 @@ export default function StackSetting({ id }: { id: string }) {
         message: `Failed to save stacks: ${error.message}`,
       });
     }
-  }
+  };
 
-  function newRow() {
+  const addRow = () => {
     if (rows.length < 8) {
       setRows([
         ...rows,
         { id: rows.length + 1, src: "", name: "", description: "" },
       ]);
     }
-  }
+  };
 
-  function updateRow(id: number, field: any, value: any) {
+  const updateRow = (rowId: number, field: keyof RowData, value: any) => {
     setRows((prevRows) =>
-      prevRows.map((row) => (row.id === id ? { ...row, [field]: value } : row))
+      prevRows.map((row) =>
+        row.id === rowId ? { ...row, [field]: value } : row
+      )
     );
-  }
+  };
 
-  function deleteLastRow() {
+  const removeLastRow = () => {
     if (rows.length > 1) {
       setRows(rows.slice(0, -1));
     }
-  }
+  };
 
   return (
     <Column fillWidth fitHeight gap="16">
@@ -173,7 +176,7 @@ export default function StackSetting({ id }: { id: string }) {
                 maxWidth: "45px",
               }}
               className="text-big-lightest"
-              emptyState={"Logo"}
+              emptyState={"Icon"}
               onChange={(event) => {
                 const file = (event.target as HTMLInputElement).files?.[0];
                 if (file) handleFileUpload(row.id, file);
@@ -206,21 +209,21 @@ export default function StackSetting({ id }: { id: string }) {
         <Row fillWidth horizontal="end" vertical="center" gap="8">
           <Button
             variant="secondary"
-            onClick={deleteLastRow}
+            onClick={removeLastRow}
             disabled={rows.length <= 1}
           >
             Remove last
           </Button>
           <Button
             variant="secondary"
-            onClick={newRow}
+            onClick={addRow}
             disabled={rows.length >= 8}
           >
             Add
           </Button>
           <Button
-            variant="primary"                        data-theme="dark"
-
+            variant="primary"
+            data-theme="dark"
             onClick={async () => {
               setLoading(true);
               await handleSave();

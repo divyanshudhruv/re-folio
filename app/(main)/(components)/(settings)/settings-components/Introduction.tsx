@@ -21,8 +21,15 @@ const inter = Inter({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
+interface IntroductionDetails {
+  tags: string[];
+  heading: string;
+  paragraphs: string[];
+  subheading: string;
+}
+
 export default function Introduction({ id }: { id: string }) {
-  const [introductionDetails, setIntroductionDetails] = useState({
+  const [introductionDetails, setIntroductionDetails] = useState<IntroductionDetails>({
     tags: [],
     heading: "",
     paragraphs: [],
@@ -40,7 +47,10 @@ export default function Introduction({ id }: { id: string }) {
 
       if (error) {
         console.error("Error fetching introduction details:", error);
-      } else if (data?.intro) {
+        return;
+      }
+
+      if (data?.intro) {
         setIntroductionDetails(data.intro);
       }
     } catch (err) {
@@ -48,33 +58,32 @@ export default function Introduction({ id }: { id: string }) {
     }
   }, [id]);
 
-  const handleSave = useCallback(() => {
-    setLoading(true);
-    console.log(introductionDetails);
-    const updateIntroductionDetails = async () => {
-      try {
-        const { error } = await supabase
-          .from("refolio_sections")
-          .update({ intro: introductionDetails })
-          .eq("id", id);
+  const updateIntroductionDetails = useCallback(async () => {
+    try {
+      const { error } = await supabase
+        .from("refolio_sections")
+        .update({ intro: introductionDetails })
+        .eq("id", id);
 
-        if (error) {
-          console.error("Error updating introduction details:", error);
-        } else {
-          console.log("Introduction details updated successfully");
-        }
-      } catch (err) {
-        console.error("Unexpected error:", err);
-      } finally {
-        setLoading(false);
+      if (error) {
+        console.error("Error updating introduction details:", error);
+      } else {
+        console.log("Introduction details updated successfully");
       }
-    };
-
-    updateIntroductionDetails();
+    } catch (err) {
+      console.error("Unexpected error:", err);
+    } finally {
+      setLoading(false);
+    }
   }, [introductionDetails, id]);
 
+  const handleSave = useCallback(() => {
+    setLoading(true);
+    updateIntroductionDetails();
+  }, [updateIntroductionDetails]);
+
   const handleChange = useCallback(
-    (field: string, value: string | string[]) => {
+    (field: keyof IntroductionDetails, value: string | string[]) => {
       setIntroductionDetails((prev) => ({ ...prev, [field]: value }));
     },
     []
@@ -122,8 +131,8 @@ export default function Introduction({ id }: { id: string }) {
           onChange={(e) =>
             handleChange("paragraphs", e.target.value.split("\n"))
           }
-        ></Textarea>
-        <Flex height={1}></Flex>
+        />
+        <Flex height={1} />
         <TagInput
           id="tag-input-example"
           value={introductionDetails.tags}
@@ -135,18 +144,16 @@ export default function Introduction({ id }: { id: string }) {
             </Kbd>
           }
         />
-        <Flex height={1}></Flex>
+        <Flex height={1} />
         <Row fillWidth horizontal="end" vertical="center">
-            <Button
-            variant="primary"                        data-theme="dark"
-
-            onClick={async () => {
-              handleSave();
-            }}
+          <Button
+            variant="primary"
+            data-theme="dark"
+            onClick={handleSave}
             disabled={loading}
-            >
+          >
             {loading ? "Saving..." : "Save"}
-            </Button>
+          </Button>
         </Row>
       </Column>
     </Column>
