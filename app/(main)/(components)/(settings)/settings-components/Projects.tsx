@@ -163,7 +163,7 @@ export default function ProjectSetting({ id }: { id: string }) {
 
           return {
             ...project,
-            src: src || "https://farmshopmfg.com/wp-content/uploads/2023/03/placeholder.png",
+            src: src,
             href: formattedHref,
           };
         })

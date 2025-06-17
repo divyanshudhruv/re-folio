@@ -52,6 +52,11 @@ export default function Experience({ id }: ExperienceProps) {
         if (data?.experiences) {
           setExperiences(data.experiences);
         }
+        const updatedExperiences = data.experiences.map((exp: ExperienceData) => ({
+          ...exp,
+          src: exp.src || 'https://farmshopmfg.com/wp-content/uploads/2023/03/placeholder.png'
+        }));
+        setExperiences(updatedExperiences);
       } catch (err) {
         console.error("Unexpected error:", err);
       }

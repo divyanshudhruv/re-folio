@@ -38,9 +38,16 @@ const Projects = ({ id }: ProjectsProps) => {
 
         if (error) {
           console.error("Error fetching data:", error);
-        } else if (data?.projects) {
-          setProjectsData(data.projects);
+          return;
+        } 
+        if (!data || !data.projects) {
+          return;
         }
+        // Set default image for projects with missing src
+        setProjectsData(data.projects.map((project: Project) => ({
+          ...project,
+          src: project.src || 'https://farmshopmfg.com/wp-content/uploads/2023/03/placeholder.png'
+        })));
       } catch (err) {
         console.error("Unexpected error:", err);
       }
