@@ -110,6 +110,16 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
           .from("users")
           .update({ pfp: personalDetails.pfp })
           .eq("id", id),
+        supabase
+          .from("refolio_sections")
+          .update({ name: personalDetails.name })
+          .eq("id", id),
+        supabase.from("users").update({ username: username }).eq("id", id),
+        supabase
+          .from("users")
+          .update({ pfp: personalDetails.pfp })
+          .eq("id", id),
+
         changeUsername(username),
       ]);
       console.log("Personal details and avatar updated successfully");
