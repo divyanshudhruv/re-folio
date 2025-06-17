@@ -19,41 +19,50 @@ const inter = Inter({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
+interface AwardRow {
+  id: number;
+  name: string;
+  year: number;
+  description: string;
+}
+
 export default function AwardsSetting({ id }: { id: string }) {
-  const [rows, setRows] = useState([
+  const [rows, setRows] = useState<AwardRow[]>([
     { id: 1, name: "", year: new Date().getFullYear(), description: "" },
   ]);
-  const [sessionId, setSessionId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    async function fetchData() {
+    const fetchData = async () => {
       const {
         data: { session },
       } = await supabase.auth.getSession();
-      if (session) {
-        setSessionId(session.user.id);
 
-        const { data, error } = await supabase
-          .from("refolio_sections")
-          .select("awards")
-          .eq("id", id)
-          .single();
-
-        if (error) {
-          console.error("Error fetching awards:", error.message);
-        } else if (data && data.awards) {
-          setRows(data.awards);
-        }
-      } else {
+      if (!session) {
         console.log("No active session found.");
+        return;
       }
-    }
+
+      const { data, error } = await supabase
+        .from("refolio_sections")
+        .select("awards")
+        .eq("id", id)
+        .single();
+
+      if (error) {
+        console.error("Error fetching awards:", error.message);
+        return;
+      }
+
+      if (data?.awards) {
+        setRows(data.awards);
+      }
+    };
 
     fetchData();
-  }, []);
+  }, [id]);
 
-  async function handleSave() {
+  const handleSave = async () => {
     try {
       const { error } = await supabase
         .from("refolio_sections")
@@ -69,33 +78,35 @@ export default function AwardsSetting({ id }: { id: string }) {
     } catch (error: any) {
       console.error(error);
     }
-  }
+  };
 
-  function newRow() {
+  const addRow = () => {
     if (rows.length < 8) {
-      setRows([
-        ...rows,
+      setRows((prevRows) => [
+        ...prevRows,
         {
-          id: rows.length + 1,
+          id: prevRows.length + 1,
           name: "",
           year: new Date().getFullYear(),
           description: "",
         },
       ]);
     }
-  }
+  };
 
-  function updateRow(id: number, field: string, value: any) {
+  const updateRow = (id: number, field: keyof AwardRow, value: any) => {
     setRows((prevRows) =>
-      prevRows.map((row) => (row.id === id ? { ...row, [field]: value } : row))
+      prevRows.map((row) =>
+        row.id === id ? { ...row, [field]: value } : row
+      )
     );
-  }
+  };
 
-  function deleteLastRow() {
+  const removeLastRow = () => {
     if (rows.length > 1) {
-      setRows(rows.slice(0, -1));
+      setRows((prevRows) => prevRows.slice(0, -1));
     }
-  }
+  };
 
   return (
     <Column fillWidth fitHeight gap="16">
@@ -146,6 +157,7 @@ export default function AwardsSetting({ id }: { id: string }) {
                 onChange={(date) =>
                   updateRow(row.id, "year", date.getFullYear())
                 }
+                cursor="interactive"
               />
             </Column>
           </Row>
@@ -154,14 +166,14 @@ export default function AwardsSetting({ id }: { id: string }) {
         <Row fillWidth horizontal="end" vertical="center" gap="8">
           <Button
             variant="secondary"
-            onClick={deleteLastRow}
+            onClick={removeLastRow}
             disabled={rows.length <= 1}
           >
             Remove last
           </Button>
           <Button
             variant="secondary"
-            onClick={newRow}
+            onClick={addRow}
             disabled={rows.length >= 5}
           >
             Add
