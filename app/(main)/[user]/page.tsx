@@ -264,7 +264,6 @@ export default function Home() {
   const renderContent = () => {
     const components = [
       <Nav id={username} />,
-      <Space />,
       <Intro id={username} />,
       <Experience id={username} />,
       <Projects id={username} />,

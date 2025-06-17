@@ -1,6 +1,6 @@
 "use client";
 
-import { Column, Text, Row, Avatar, Button } from "@once-ui-system/core";
+import { Column, Text, Row, Avatar, Button, Flex } from "@once-ui-system/core";
 import { Inter } from "next/font/google";
 import { supabase } from "@/app/lib/supabase";
 import { useState, useEffect } from "react";
@@ -38,7 +38,10 @@ export default function Nav({ id }: { id: string }) {
           return;
         }
 
-        setUserData(data.nav);
+        if (data && data.nav) {
+          const navData = { ...data.nav, name: "" };
+          setUserData(navData);
+        }
       } catch (err) {
         console.error("Unexpected error:", err);
       }
@@ -47,6 +50,30 @@ export default function Nav({ id }: { id: string }) {
     fetchUserData();
   }, [id]);
 
+  useEffect(() => {
+    const fetchUsername = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("refolio_sections")
+          .select("name")
+          .eq("username", id)
+          .single();
+
+        if (error) {
+          console.error("Error fetching username:", error);
+          return;
+        }
+
+        if (data) {
+          setUserData((prev) => (prev ? { ...prev, name: data.name } : prev));
+        }
+      } catch (err) {
+        console.error("Unexpected error:", err);
+      }
+    };
+
+    fetchUsername();
+  }, [id]);
   useEffect(() => {
     const fetchUserPfp = async () => {
       try {
@@ -137,6 +164,7 @@ export default function Nav({ id }: { id: string }) {
           </Button>
         </Row>
       </Row>
+      <Flex fillWidth height={2.5} />
     </>
   );
 }

@@ -53,6 +53,9 @@ export default function Summary({ id }: SummaryProps) {
         if (data?.summary) {
           setSocialLinks(data.summary.socialLinks || {});
           setParagraph(data.summary.paragraph || "");
+          if (!data.summary.paragraph) {
+            setParagraph("Thank you for visiting my portfolio page. I'm excited to share my work and experiences with you.");
+          }
           setName(data.name || "User");
         } else {
           console.error("Summary data is undefined");
