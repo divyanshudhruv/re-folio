@@ -28,7 +28,7 @@ const inter = Inter({
 
 const Space = () => <Flex fillWidth height={0.5} />;
 
-export default function IntroSettings() {
+export default function BodySettings() {
   const [id, setId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -45,16 +45,26 @@ export default function IntroSettings() {
   const renderSettingsComponents = () => {
     const components = [
       <PersonalDetailsSetting id={id!} />,
-      <IntroductionSetting id={id!} />,
-      <ExperienceSetting id={id!} />,
-      <ProjectSetting id={id!} />,
-      <EducationSetting id={id!} />,
-      <StackSetting id={id!} />,
-      <CertificationSetting id={id!} />,
-      <AwardsSetting id={id!} />,
-      <LanguagesSetting id={id!} />,
-      <SummarySetting id={id!} />,
-      <PasswordProtection id={id!} />,
+      <Space />,
+      <IntroductionSetting id={id!} />,      <Space />,
+
+      <ExperienceSetting id={id!} />,      <Space />,
+
+      <ProjectSetting id={id!} />,      <Space />,
+
+      <EducationSetting id={id!} />,      <Space />,
+
+      <StackSetting id={id!} />,      <Space />,
+
+      <CertificationSetting id={id!} />,      <Space />,
+
+      <AwardsSetting id={id!} />,      <Space />,
+
+      <LanguagesSetting id={id!} />,      <Space />,
+
+      <SummarySetting id={id!} />,      <Space />,
+
+      <PasswordProtection id={id!} />,      <Space />,
 
     ];
 

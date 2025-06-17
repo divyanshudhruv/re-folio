@@ -4,7 +4,7 @@ import { Column, Flex, Text, useToast, Spinner } from "@once-ui-system/core";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import NavSettings from "../../(components)/(settings)/NavSettings";
-import IntroSettings from "../../(components)/(settings)/IntroSettings";
+import BodySettings from "../../(components)/(settings)/BodySettings";
 import { supabase } from "@/app/lib/supabase";
 import "./../../../(main)/global.css";
 
@@ -86,7 +86,7 @@ const Content = ({ userId }: { userId: string | null }) => (
       {userId && <NavSettings id={userId} />}
       <Space />
     </motion.div>
-    <IntroSettings />
+    <BodySettings />
   </Column>
 );
 
