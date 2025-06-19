@@ -347,6 +347,20 @@ function LoginText() {
     fetchScrollerData();
   }, []);
 
+  const [notice, setNotice] = useState<string>("");
+  useEffect(() => {
+    async function fetchNotice() {
+      const { data, error } = await supabase
+        .from("refolio_sections")
+        .select("notice")
+        .eq("username", "divyanshudhruv")
+        .single();
+      if (!error && data && data.notice) {
+        setNotice(data.notice);
+      }
+    }
+    fetchNotice();
+  }, []);
   return (
     <Column maxWidth={32} className="responsive-landing-container">
       <motion.div
@@ -449,7 +463,7 @@ function LoginText() {
             </Scroller>{" "}
           </RevealFx>
           <Flex height={1}></Flex>
-          <Row paddingX="20">
+          <Column paddingX="20">
             {" "}
             <RevealFx delay={0.4}>
               <Text className="text-small" style={{ fontSize: "13px" }}>
@@ -457,7 +471,14 @@ function LoginText() {
                 re-folios are shown here.
               </Text>
             </RevealFx>
-          </Row>
+            {notice ? (
+              <RevealFx delay={0.4}>
+                <Text onBackground="danger-weak" style={{ fontSize: "13px" }}>
+                  <i className="ri-close-circle-line"></i>&nbsp;{notice}
+                </Text>
+              </RevealFx>
+            ) : null}
+          </Column>
         </motion.div>
       </Flex>
     </Column>

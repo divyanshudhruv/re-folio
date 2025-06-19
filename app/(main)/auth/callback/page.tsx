@@ -30,8 +30,7 @@ export default function Page() {
         .replace(/\s+/g, "");
       const email = user.email || "default_email@example.com";
 
-      console.log("User Name:", username);
-      console.log("User ID:", user.id);
+      
 
       await upsertRefolioSections({ user, username, email });
       await upsertUsers({ user, username, email });
