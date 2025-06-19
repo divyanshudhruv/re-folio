@@ -333,7 +333,7 @@ export default function Home() {
       return (
         <Column maxWidth={37.5} center fillWidth fillHeight>
           <Text className="text-small" style={{ fontSize: "14px " }}>
-            Not found, or incomplete profile.
+            Incomplete profile, data not available.
           </Text>
         </Column>
       );
