@@ -77,6 +77,7 @@ function MainContent() {
       style={{ maxWidth: "1000px" }}
     >
       <LoginText />
+
       <LoginCard />
     </Row>
   );
