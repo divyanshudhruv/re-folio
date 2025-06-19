@@ -43,23 +43,31 @@ const CertificationCard: React.FC<CertificationCardProps> = ({
     className="responsive-padding-container"
   >
     <Column horizontal="start" vertical="start" gap="2">
-      <Text variant="label-default-s" className={`${inter.className} text-small`}>
+      <Text
+        variant="label-default-s"
+        className={`${inter.className} text-small`}
+      >
         {title}
       </Text>
-      <Flex fillWidth height={0.05} />
+      <Flex fillWidth height={0.075} />
       <Text
         variant="label-default-s"
         className={`${inter.className} text-more-big-lighter`}
       >
         {institution}
       </Text>
-      <Text variant="label-default-s" className={`${inter.className} text-small`}>
+      <Text
+        variant="label-default-s"
+        className={`${inter.className} text-small`}
+      >
         {duration}
       </Text>
-      <Flex fillWidth height={0.05} />
+      <Flex fillWidth height={0.075} />
       <Text
         variant="label-default-s"
         className={`${inter.className} text-big-darker`}
+                style={{lineHeight:"1.025rem"}}
+
       >
         {description}
       </Text>

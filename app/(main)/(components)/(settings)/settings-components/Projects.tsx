@@ -117,7 +117,13 @@ export default function ProjectSetting({ id }: { id: string }) {
     if (projects.length < 8) {
       setProjects([
         ...projects,
-        { id: projects.length + 1, src: "", title: "", description: "", href: "" },
+        {
+          id: projects.length + 1,
+          src: "",
+          title: "",
+          description: "",
+          href: "",
+        },
       ]);
     }
   };
@@ -128,7 +134,11 @@ export default function ProjectSetting({ id }: { id: string }) {
     }
   };
 
-  const updateProject = (projectId: number, field: keyof Project, value: any) => {
+  const updateProject = (
+    projectId: number,
+    field: keyof Project,
+    value: any
+  ) => {
     setProjects((prev) =>
       prev.map((project) =>
         project.id === projectId ? { ...project, [field]: value } : project
@@ -209,24 +219,28 @@ export default function ProjectSetting({ id }: { id: string }) {
             </Text>
             <Column fillWidth>
               <Input
-              id=""
+                id=""
                 radius="top"
                 label="Title"
                 height="s"
                 value={project.title}
-                onChange={(e) => updateProject(project.id, "title", e.target.value)}
+                onChange={(e) =>
+                  updateProject(project.id, "title", e.target.value)
+                }
               />
               <Input
-              id=""
+                id=""
                 radius="none"
                 placeholder="Link to project"
                 height="m"
                 value={project.href}
-                onChange={(e) => updateProject(project.id, "href", e.target.value)}
+                onChange={(e) =>
+                  updateProject(project.id, "href", e.target.value)
+                }
                 hasPrefix={<Text className="text-big-darker">https://</Text>}
               />
               <Input
-              id=""
+                id=""
                 radius="none"
                 label="Description"
                 height="s"
@@ -264,7 +278,7 @@ export default function ProjectSetting({ id }: { id: string }) {
           <Button
             variant="secondary"
             onClick={addProject}
-            disabled={projects.length >= 4}
+            disabled={projects.length >= 8}
           >
             Add
           </Button>

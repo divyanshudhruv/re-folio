@@ -96,9 +96,7 @@ export default function AwardsSetting({ id }: { id: string }) {
 
   const updateRow = (id: number, field: keyof AwardRow, value: any) => {
     setRows((prevRows) =>
-      prevRows.map((row) =>
-        row.id === id ? { ...row, [field]: value } : row
-      )
+      prevRows.map((row) => (row.id === id ? { ...row, [field]: value } : row))
     );
   };
 
@@ -133,7 +131,7 @@ export default function AwardsSetting({ id }: { id: string }) {
               <Input
                 radius="top"
                 id={`name-${row.id}`}
-                label="Championship"
+                label="Host"
                 height="s"
                 value={row.name}
                 onChange={(e) => updateRow(row.id, "name", e.target.value)}

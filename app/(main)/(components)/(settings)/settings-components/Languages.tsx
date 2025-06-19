@@ -182,7 +182,7 @@ export default function LanguageSetting({ id }: { id: string }) {
           <Button
             variant="secondary"
             onClick={newRow}
-            disabled={rows.length >= 7}
+            disabled={rows.length >= 10}
           >
             Add
           </Button>

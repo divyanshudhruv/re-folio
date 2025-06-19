@@ -54,7 +54,9 @@ export default function EducationSetting({ id }: { id: string }) {
       }
 
       setEducationDetails(
-        data?.education?.length ? data.education : [{ ...defaultEducationDetail }]
+        data?.education?.length
+          ? data.education
+          : [{ ...defaultEducationDetail }]
       );
     } catch (err) {
       console.error("Unexpected error:", err);
@@ -104,9 +106,7 @@ export default function EducationSetting({ id }: { id: string }) {
   }, []);
 
   const removeLastItem = useCallback(() => {
-    setEducationDetails((prev) =>
-      prev.length > 1 ? prev.slice(0, -1) : prev
-    );
+    setEducationDetails((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev));
   }, []);
 
   const renderEducationFields = () =>
@@ -143,8 +143,8 @@ export default function EducationSetting({ id }: { id: string }) {
           <Input
             radius="none"
             id={`input-duration-${education.id}`}
-            label="Year"
-            height="s"
+            placeholder="Year (e.g., 2015-2019)"
+            height="m"
             value={education.duration}
             onChange={(e) =>
               handleChange(education.id, "duration", e.target.value)
@@ -184,7 +184,7 @@ export default function EducationSetting({ id }: { id: string }) {
           <Button
             variant="secondary"
             onClick={handleAdd}
-            disabled={educationDetails.length >= 4}
+            disabled={educationDetails.length >= 5}
           >
             Add
           </Button>

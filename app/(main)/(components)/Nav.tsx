@@ -1,10 +1,10 @@
 "use client";
 
+import "./../global.css";
 import { Column, Text, Row, Avatar, Button, Flex } from "@once-ui-system/core";
 import { Inter } from "next/font/google";
 import { supabase } from "@/app/lib/supabase";
 import { useState, useEffect } from "react";
-import "./../global.css";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -36,7 +36,7 @@ export default function Nav({ id }: { id: string }) {
         if (error) {
           console.error("Error fetching user data:", error);
           return;
-        }
+        } 
 
         if (data) {
           setUserData(data.nav);

@@ -33,6 +33,8 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
   const [username, setUsername] = useState<string>("");
   const [usernameConditions, setUsernameConditions] = useState<boolean>(true);
   const [usernameMessages, setUsernameMessages] = useState<string>("");
+  const [usernameMessagesError, setUsernameMessagesError] =
+    useState<string>("");
 
   const fetchData = useCallback(async () => {
     try {
@@ -78,14 +80,8 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
       if (error) throw error;
 
       if (data?.can_change_username) {
-        setUsernameMessages(
-          "You can change your username only once. Please choose wisely."
-        );
       } else {
         setUsernameConditions(false);
-        setUsernameMessages(
-          "Username change is disabled. You can only change it once."
-        );
       }
     } catch (err) {
       console.error("Error checking username change permission:", err);
@@ -163,9 +159,10 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
   const changeUsername = async (usernameArgs: string) => {
     usernameArgs = usernameArgs.trim();
     if (usernameArgs.includes(" ")) {
-      setUsernameMessages(
+      setUsernameMessagesError(
         "Username should not contain spaces. Please choose another."
       );
+      setUsernameMessages("");
       return;
     }
     try {
@@ -180,9 +177,11 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
       );
 
       if (isUsernameTaken) {
-        setUsernameMessages(
+        setUsernameMessagesError(
           "This username is already taken. Please choose another."
         );
+        setUsernameMessages("");
+
         return;
       }
 
@@ -191,6 +190,7 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
       if (currentUser?.username === usernameArgs) {
         setUsernameMessages("Current username is already set. No worries!");
         setUsernameConditions(false);
+        setUsernameMessagesError("");
         return;
       }
 
@@ -212,10 +212,14 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
           .eq("id", id);
 
         setUsernameMessages("Username updated successfully!");
+        setUsernameMessagesError("");
+        setUsernameConditions(false);
+        
       } else {
-        setUsernameMessages(
+        setUsernameMessagesError(
           "You can only change your username once. Please contact support."
         );
+        setUsernameMessages("");
       }
     } catch (err) {
       console.error("Error changing username:", err);
@@ -248,10 +252,12 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
           placeholder="username"
           height="m"
           hasPrefix={<i className="ri-at-line text-big-darker"></i>}
+          hasSuffix={<Kbd className="text-big-lighter">once</Kbd>}
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           error={usernameConditions}
-          errorMessage={usernameMessages}
+          description={usernameMessages}
+          errorMessage={usernameMessagesError}
         />
         <Input
           radius="none"

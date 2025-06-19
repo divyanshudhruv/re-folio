@@ -217,7 +217,7 @@ export default function StackSetting({ id }: { id: string }) {
           <Button
             variant="secondary"
             onClick={addRow}
-            disabled={rows.length >= 8}
+            disabled={rows.length >= 10}
           >
             Add
           </Button>
