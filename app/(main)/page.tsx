@@ -15,6 +15,7 @@ import {
   Kbd,
   Scroller,
   Card,
+  RevealFx,
 } from "@once-ui-system/core";
 import { useState, useEffect } from "react";
 import { Inter } from "next/font/google";
@@ -352,19 +353,21 @@ function LoginText() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Text
-          variant="heading-strong-xl"
-          onBackground="neutral-medium"
-          className={inter.className + " text-responsive-heading"}
-          style={{
-            lineHeight: "1.4",
-            fontSize: "40px",
-            letterSpacing: "-0.1px",
-          }}
-        >
-          Welcome to Re-Folio, your resume{" "}
-          <Text style={{ color: "#6B6B6B" }}>in a portfolio style.</Text>
-        </Text>
+        <RevealFx>
+          <Text
+            variant="heading-strong-xl"
+            onBackground="neutral-medium"
+            className={inter.className + " text-responsive-heading"}
+            style={{
+              lineHeight: "1.4",
+              fontSize: "40px",
+              letterSpacing: "-0.1px",
+            }}
+          >
+            Welcome to Re-Folio, your resume{" "}
+            <Text style={{ color: "#6B6B6B" }}>in a portfolio style.</Text>
+          </Text>
+        </RevealFx>
       </motion.div>
       <Flex fillWidth height={1} />
       <Flex maxWidth={26}>
@@ -373,80 +376,86 @@ function LoginText() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Text
-            style={{ fontSize: "15px" }}
-            className={
-              inter.className + " text-paragraph text-responsive-paragraph"
-            }
-          >
-            Re-Folio is designed to help you create stunning resume portfolios
-            with ease. Whether you're a designer, developer, or creative
-            professional, showcase your skills and stand out with our platform's
-            tools.
-          </Text>
-          <Flex height={3}></Flex>
-          <Scroller maxWidth={32} fadeColor="transparent">
-            <Row gap="12">
-              {scrollerUsers.map((user) => (
-                <Card
-                  key={user.username}
-                  radius="l-4"
-                  direction="row"
-                  border="neutral-alpha-weak"
-                  background="surface"
-                  padding="s"
-                  vertical="center"
-                  style={{
-                    backgroundColor: "#1C1C1C",
-                    cursor: user.username ? "pointer" : "default",
-                    width: "auto",
-                    minWidth: "220px",
-                  }}
-                  onClick={() => {
-                    if (user.username) {
-                      window.open(`/@${user.username}`, "_blank");
-                    }
-                  }}
-                >
-                  <Row gap="12" center>
-                    <Column
-                      horizontal="center"
-                      vertical="start"
-                      fillHeight
-                      fitWidth
-                    >
-                      <Media
-                        width={1.7}
-                        height={1.7}
-                        radius="l"
-                        src={user.pfp}
-                        unoptimized
-                      />
-                    </Column>
-                    <Text
-                      variant="label-default-s"
-                      className={`${inter.className} text-big-lighter`}
-                      style={
-                        {
-                          // Remove maxWidth so text can expand Card
-                        }
+          <RevealFx delay={0.2}>
+            <Text
+              style={{ fontSize: "15px" }}
+              className={
+                inter.className + " text-paragraph text-responsive-paragraph"
+              }
+            >
+              Re-Folio is designed to help you create stunning resume portfolios
+              with ease. Whether you're a designer, developer, or creative
+              professional, showcase your skills and stand out with our
+              platform's tools.
+            </Text>
+          </RevealFx>
+          <Flex height={3}></Flex>{" "}
+          <RevealFx>
+            <Scroller maxWidth={32} fadeColor="transparent">
+              <Row gap="12">
+                {scrollerUsers.map((user) => (
+                  <Card
+                    key={user.username}
+                    radius="l-4"
+                    direction="row"
+                    border="neutral-alpha-weak"
+                    background="surface"
+                    padding="s"
+                    vertical="center"
+                    style={{
+                      backgroundColor: "#1C1C1C",
+                      cursor: user.username ? "pointer" : "default",
+                      width: "auto",
+                      minWidth: "220px",
+                    }}
+                    onClick={() => {
+                      if (user.username) {
+                        window.open(`/@${user.username}`, "_blank");
                       }
-                      title={user.name}
-                    >
-                      {user.name}
-                    </Text>
-                  </Row>
-                </Card>
-              ))}
-            </Row>
-          </Scroller>
+                    }}
+                  >
+                    <Row gap="12" center>
+                      <Column
+                        horizontal="center"
+                        vertical="start"
+                        fillHeight
+                        fitWidth
+                      >
+                        <Media
+                          width={1.7}
+                          height={1.7}
+                          radius="l"
+                          src={user.pfp}
+                          unoptimized
+                        />
+                      </Column>
+                      <Text
+                        variant="label-default-s"
+                        className={`${inter.className} text-big-lighter`}
+                        style={
+                          {
+                            // Remove maxWidth so text can expand Card
+                          }
+                        }
+                        title={user.name}
+                      >
+                        {user.name}
+                      </Text>
+                    </Row>
+                  </Card>
+                ))}
+              </Row>
+            </Scroller>{" "}
+          </RevealFx>
           <Flex height={1}></Flex>
           <Row paddingX="20">
             {" "}
-            <Text className="text-small" style={{ fontSize: "13px" }}>
-              <i className="ri-information-line"></i>&nbsp;Only published
-              re-folios are shown here.
-            </Text>
+            <RevealFx delay={0.4}>
+              <Text className="text-small" style={{ fontSize: "13px" }}>
+                <i className="ri-information-line"></i>&nbsp;Only published
+                re-folios are shown here.
+              </Text>
+            </RevealFx>
           </Row>
         </motion.div>
       </Flex>
