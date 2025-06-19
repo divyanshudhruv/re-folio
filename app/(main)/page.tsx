@@ -13,6 +13,8 @@ import {
   Media,
   SmartLink,
   Kbd,
+  Scroller,
+  Card,
 } from "@once-ui-system/core";
 import { useState, useEffect } from "react";
 import { Inter } from "next/font/google";
@@ -286,7 +288,7 @@ function Divider() {
         fillWidth
         width={25}
         height={0.1}
-        style={{ backgroundColor: "#262626",position:"absolute" }}
+        style={{ backgroundColor: "#262626", position: "absolute" }}
         zIndex={9}
       />
       <Flex zIndex={10}>
@@ -306,7 +308,7 @@ function Divider() {
 function FooterLinks() {
   return (
     <>
-    <Text className="text-small" style={{ marginTop: "-30px" }}>
+      <Text className="text-small" style={{ marginTop: "-30px" }}>
         signup for early access
       </Text>
       <Text className="text-small" style={{ marginTop: "0px" }}>
@@ -317,6 +319,32 @@ function FooterLinks() {
 }
 
 function LoginText() {
+  const [scrollerUsers, setScrollerUsers] = useState<
+    { username: string; name: string; pfp: string }[]
+  >([]);
+
+  useEffect(() => {
+    async function fetchScrollerData() {
+      const { data, error } = await supabase
+        .from("refolio_sections")
+        .select("username,name,nav")
+        .eq("is_published", true)
+        .limit(20);
+
+      if (!error && data && data.length > 0) {
+        const users = data
+          .filter((item: any) => item.nav?.pfp && item.nav.pfp.trim() !== "")
+          .map((item: any) => ({
+            username: item.username ?? "",
+            name: item.name ?? "",
+            pfp: item.nav.pfp,
+          }));
+        setScrollerUsers(users);
+      }
+    }
+    fetchScrollerData();
+  }, []);
+
   return (
     <Column maxWidth={32} className="responsive-landing-container">
       <motion.div
@@ -355,12 +383,71 @@ function LoginText() {
             with ease. Whether you're a designer, developer, or creative
             professional, showcase your skills and stand out with our platform's
             tools.
-            <br />
-            <br />
-            Join our community and start building your resume portfolio today.
-            Share your feedback, contribute to the project, and help us shape
-            the future of Re-Folio!
           </Text>
+          <Flex height={3}></Flex>
+          <Scroller maxWidth={32} fadeColor="transparent">
+            <Row gap="12">
+              {scrollerUsers.map((user) => (
+                <Card
+                  key={user.username}
+                  radius="l-4"
+                  direction="row"
+                  border="neutral-alpha-weak"
+                  background="surface"
+                  padding="s"
+                  vertical="center"
+                  style={{
+                    backgroundColor: "#1C1C1C",
+                    cursor: user.username ? "pointer" : "default",
+                    width: "auto",
+                    minWidth: "220px",
+                  }}
+                  onClick={() => {
+                    if (user.username) {
+                      window.open(`/@${user.username}`, "_blank");
+                    }
+                  }}
+                >
+                  <Row gap="12" center>
+                    <Column
+                      horizontal="center"
+                      vertical="start"
+                      fillHeight
+                      fitWidth
+                    >
+                      <Media
+                        width={1.7}
+                        height={1.7}
+                        radius="l"
+                        src={user.pfp}
+                        unoptimized
+                      />
+                    </Column>
+                    <Text
+                      variant="label-default-s"
+                      className={`${inter.className} text-big-lighter`}
+                      style={
+                        {
+                          // Remove maxWidth so text can expand Card
+                        }
+                      }
+                      title={user.name}
+                    >
+                      {user.name}
+                    </Text>
+                  </Row>
+                </Card>
+              ))}
+            </Row>
+          </Scroller>
+          <Flex height={1}></Flex>
+          <Row paddingX="20">
+            {" "}
+            <Text className="text-small" style={{ fontSize: "13px" }}>
+              <i className="ri-information-line"></i>&nbsp;Only published
+              re-folios are shown here.
+            </Text>
+          </Row>
         </motion.div>
       </Flex>
     </Column>
