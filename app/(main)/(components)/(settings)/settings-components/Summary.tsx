@@ -119,7 +119,7 @@ export default function SummarySetting({ id }: { id: string }) {
       </HeadingLink>
       <Column>
         <Column>
-          <Input
+          <Input spellCheck={false}
             id="linkedin"
             label="Linkedin"
             radius="top"
@@ -127,7 +127,7 @@ export default function SummarySetting({ id }: { id: string }) {
             value={socialLinks.linkedin}
             onChange={(e) => handleInputChange("linkedin", e.target.value)}
           />
-          <Input
+          <Input spellCheck={false}
             id="twitter"
             label="X"
             radius="none"
@@ -135,7 +135,7 @@ export default function SummarySetting({ id }: { id: string }) {
             value={socialLinks.twitter}
             onChange={(e) => handleInputChange("twitter", e.target.value)}
           />
-          <Input
+          <Input spellCheck={false}
             id="github"
             label="Github"
             radius="none"

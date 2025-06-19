@@ -146,8 +146,8 @@ export default function LanguageSetting({ id }: { id: string }) {
             <Row fillWidth>
               <Input
                 id={`input-${row.id}`}
-                label="Language"
-                height="s"
+                placeholder="Language"
+                height="m"
                 radius="left"
                 value={row.name}
                 onChange={(e) => updateRow(row.id, "name", e.target.value)}
@@ -170,7 +170,7 @@ export default function LanguageSetting({ id }: { id: string }) {
             </Row>
           </Row>
         ))}
-        <Flex height={1} />
+        {/* <Flex height={1} /> */}
         <Row fillWidth horizontal="end" vertical="center" gap="8">
           <Button
             variant="secondary"

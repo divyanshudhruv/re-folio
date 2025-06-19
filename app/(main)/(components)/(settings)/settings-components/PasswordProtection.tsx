@@ -29,6 +29,7 @@ export default function PasswordProtection({ id }: { id: string }) {
   const [isChecked, setIsChecked] = useState(false);
   const [error, setError] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [descMessage, setDescMessage] = useState<string>("");
 
   const fetchPassword = useCallback(async () => {
     if (!id) {
@@ -103,17 +104,16 @@ export default function PasswordProtection({ id }: { id: string }) {
       }
 
       setError(false);
-      setErrorMessage("Password updated successfully.");
+      setErrorMessage("");
+      setDescMessage("Password updated successfully!");
       // addToast({
       //     variant: "success",
       //     message: "Password protection updated successfully.",
       // });
     } catch (error) {
       console.error(error);
-      addToast({
-        variant: "danger",
-        message: "Failed to update password protection.",
-      });
+      setError(true);
+      setErrorMessage("Failed to update password protection.");
     }
   };
 
@@ -137,7 +137,7 @@ export default function PasswordProtection({ id }: { id: string }) {
           onToggle={() => setIsChecked(!isChecked)}
         />
         {isChecked && (
-          <Input
+          <Input spellCheck={false}
             id="password-input"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -145,6 +145,7 @@ export default function PasswordProtection({ id }: { id: string }) {
             height="m"
             error={error}
             errorMessage={errorMessage}
+            description={descMessage}
           />
         )}
         <Row fillWidth horizontal="end" vertical="center" gap="8">

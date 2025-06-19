@@ -122,12 +122,12 @@ export default function StackSetting({ id }: { id: string }) {
   };
 
   const addRow = () => {
-    if (rows.length < 8) {
+    
       setRows([
         ...rows,
         { id: rows.length + 1, src: "", name: "", description: "" },
       ]);
-    }
+    
   };
 
   const updateRow = (rowId: number, field: keyof RowData, value: any) => {
@@ -184,7 +184,7 @@ export default function StackSetting({ id }: { id: string }) {
               initialPreviewImage={row.src}
             />
             <Row>
-              <Input
+              <Input spellCheck={false}
                 id={`name-${row.id}`}
                 placeholder="Name"
                 radius="left"
@@ -192,11 +192,11 @@ export default function StackSetting({ id }: { id: string }) {
                 value={row.name}
                 onChange={(e) => updateRow(row.id, "name", e.target.value)}
               />
-              <Input
+              <Input spellCheck={false}
                 id={`description-${row.id}`}
-                placeholder="Description"
+                label="Description"
                 radius="right"
-                height="m"
+                height="s"
                 value={row.description}
                 onChange={(e) =>
                   updateRow(row.id, "description", e.target.value)

@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Column,
-  Text,
-  Flex,
-  Card,
-  Grid,
-  Media,
-} from "@once-ui-system/core";
+import { Column, Text, Flex, Card, Grid, Media } from "@once-ui-system/core";
 import { Inter } from "next/font/google";
 import { useState, useEffect } from "react";
 import { supabase } from "@/app/lib/supabase";
@@ -46,6 +39,15 @@ const Stack = ({ id }: StackProps) => {
           console.error("Error fetching data:", error);
         } else if (data?.stacks) {
           setStacksData(data.stacks);
+          setStacksData(
+            data.stacks.map((stack: StackData) => ({
+              ...stack,
+              src:
+                stack.src && stack.src.trim() !== ""
+                  ? stack.src
+                  : "https://farmshopmfg.com/wp-content/uploads/2023/03/placeholder.png",
+            }))
+          );
         }
       } catch (err) {
         console.error("Unexpected error:", err);

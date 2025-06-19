@@ -128,7 +128,7 @@ export default function AwardsSetting({ id }: { id: string }) {
               {row.id}.
             </Text>
             <Column fillWidth>
-              <Input
+              <Input spellCheck={false}
                 radius="top"
                 id={`name-${row.id}`}
                 label="Host"
@@ -136,7 +136,7 @@ export default function AwardsSetting({ id }: { id: string }) {
                 value={row.name}
                 onChange={(e) => updateRow(row.id, "name", e.target.value)}
               />
-              <Input
+              <Input spellCheck={false}
                 radius="none"
                 id={`description-${row.id}`}
                 label="Award"
@@ -146,21 +146,20 @@ export default function AwardsSetting({ id }: { id: string }) {
                   updateRow(row.id, "description", e.target.value)
                 }
               />
-              <DateInput
+              <Input spellCheck={false}
                 id={`year-${row.id}`}
-                label="Select Year"
-                value={new Date(row.year, 0, 1)}
-                height="s"
+                placeholder="Year (e.g., 2015)"
+                value={row.year}
+                height="m"
                 radius="bottom"
-                onChange={(date) =>
-                  updateRow(row.id, "year", date.getFullYear())
+                onChange={(e) =>
+                  updateRow(row.id, "year", e.target.value)
                 }
-                cursor="interactive"
               />
             </Column>
           </Row>
         ))}
-        <Flex height={1}></Flex>
+        {/* <Flex height={1}></Flex> */}
         <Row fillWidth horizontal="end" vertical="center" gap="8">
           <Button
             variant="secondary"

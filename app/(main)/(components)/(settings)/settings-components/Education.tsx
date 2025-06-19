@@ -120,7 +120,7 @@ export default function EducationSetting({ id }: { id: string }) {
           {index + 1}.
         </Text>
         <Column fillWidth>
-          <Input
+          <Input spellCheck={false}
             radius="top"
             id={`input-title-${education.id}`}
             label="Level"
@@ -130,7 +130,7 @@ export default function EducationSetting({ id }: { id: string }) {
               handleChange(education.id, "title", e.target.value)
             }
           />
-          <Input
+          <Input spellCheck={false}
             radius="none"
             id={`input-institution-${education.id}`}
             label="Name of institute"
@@ -140,7 +140,7 @@ export default function EducationSetting({ id }: { id: string }) {
               handleChange(education.id, "institution", e.target.value)
             }
           />
-          <Input
+          <Input spellCheck={false}
             radius="none"
             id={`input-duration-${education.id}`}
             placeholder="Year (e.g., 2015-2019)"
@@ -150,7 +150,7 @@ export default function EducationSetting({ id }: { id: string }) {
               handleChange(education.id, "duration", e.target.value)
             }
           />
-          <Textarea
+          <Textarea spellCheck={false}
             lines={6}
             id={`textarea-description-${education.id}`}
             radius="bottom"
