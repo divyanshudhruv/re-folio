@@ -262,7 +262,83 @@ export default function Home() {
     </Column>
   );
 
+  const [navData, setNavData] = useState<any>(null);
+  const [navLoading, setNavLoading] = useState(true);
+  const [introLoading, setIntroLoading] = useState(true);
+  const [introData, setIntroData] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchIntro = async () => {
+      if (!username) return;
+      setIntroLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from("refolio_sections")
+          .select("intro")
+          .eq("username", username)
+          .single();
+        if (error) {
+          setIntroData({});
+        } else {
+          setIntroData(data?.intro);
+        }
+      } catch (err) {
+        setIntroData({});
+      } finally {
+        setIntroLoading(false);
+      }
+    };
+    const fetchNav = async () => {
+      if (!username) return;
+      setNavLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from("refolio_sections")
+          .select("nav")
+          .eq("username", username)
+          .single();
+        if (error) {
+          setNavData({});
+        } else {
+          setNavData(data?.nav);
+        }
+      } catch (err) {
+        setNavData({});
+      } finally {
+        setNavLoading(false);
+      }
+    };
+    fetchNav();
+    fetchIntro();
+  }, [username]);
+
   const renderContent = () => {
+    if (introLoading && navLoading) {
+      return renderLoadingState("Loading...");
+    }
+    if (
+      !introData ||
+      (typeof introData === "object" &&
+        (Object.keys(introData).length === 0 ||
+          Object.values(introData).some((v) => v == null))) ||
+      !navData ||
+      (typeof navData === "object" &&
+        (Object.keys(Object.assign({}, navData, { pfp: undefined })).filter(
+          (key) => key !== "pfp"
+        ).length === 0 ||
+          Object.entries(navData)
+            .filter(([key]) => key !== "pfp")
+            .some(([, value]) => value == null)))
+    ) {
+      return (
+        <Column maxWidth={37.5} center fillWidth fillHeight>
+          <Text className="text-small" style={{ fontSize: "14px " }}>
+            Not found, or incomplete profile.
+          </Text>
+        </Column>
+      );
+    }
+
     const components = [
       <Nav id={username} />,
       <Intro id={username} />,
