@@ -183,7 +183,7 @@ export default function ExperienceSetting({ id }: { id: string }) {
           initialPreviewImage={experience.src}
         />
         <Column fillWidth>
-          <Input
+          <Input spellCheck={false}
             radius="top-right"
             id={`title-${experience.id}`}
             label="Title"
@@ -194,7 +194,7 @@ export default function ExperienceSetting({ id }: { id: string }) {
             }
             style={{ borderTopRightRadius: "20px !important" }}
           />
-          <Input
+          <Input spellCheck={false}
             radius="none"
             id={`company-${experience.id}`}
             label="Company"
@@ -204,11 +204,11 @@ export default function ExperienceSetting({ id }: { id: string }) {
               updateExperience(experience.id, "company", e.target.value)
             }
           />
-          <Input
+          <Input spellCheck={false}
             radius="bottom-right"
             id={`duration-${experience.id}`}
-            label="Year"
-            height="s"
+            placeholder="Year (e.g., Jan 2014 - Mar 2018)"
+            height="m"
             value={experience.duration}
             onChange={(e) =>
               updateExperience(experience.id, "duration", e.target.value)

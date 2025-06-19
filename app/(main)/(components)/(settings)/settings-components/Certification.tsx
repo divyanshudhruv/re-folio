@@ -136,7 +136,7 @@ export default function CertificationSetting({ id }: { id: string }) {
               {cert.id}.
             </Text>
             <Column fillWidth>
-              <Input
+              <Input spellCheck={false}
                 radius="top"
                 id={`title-${cert.id}`}
                 label="Certification Name"
@@ -144,7 +144,7 @@ export default function CertificationSetting({ id }: { id: string }) {
                 value={cert.title}
                 onChange={(e) => updateRow(cert.id, "title", e.target.value)}
               />
-              <Input
+              <Input spellCheck={false}
                 radius="none"
                 id={`institution-${cert.id}`}
                 label="Issuing Organization"
@@ -154,7 +154,7 @@ export default function CertificationSetting({ id }: { id: string }) {
                   updateRow(cert.id, "institution", e.target.value)
                 }
               />
-              <Input
+              <Input spellCheck={false}
                 radius="none"
                 id={`duration-${cert.id}`}
                 placeholder="Year (YYYY) or Duration (e.g., 2015-2019)"
@@ -176,7 +176,7 @@ export default function CertificationSetting({ id }: { id: string }) {
             </Column>
           </Row>
         ))}
-        <Flex height={1} />
+        {/* <Flex height={1} /> */}
         <Row fillWidth horizontal="end" vertical="center" gap="8">
           <Button
             variant="secondary"

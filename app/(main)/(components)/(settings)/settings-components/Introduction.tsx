@@ -105,7 +105,7 @@ export default function Introduction({ id }: { id: string }) {
         </Text>
       </HeadingLink>
       <Column>
-        <Input
+        <Input spellCheck={false}
           radius="top"
           id="input-1"
           label="Heading"
@@ -113,7 +113,7 @@ export default function Introduction({ id }: { id: string }) {
           value={introductionDetails.heading}
           onChange={(e) => handleChange("heading", e.target.value)}
         />
-        <Input
+        <Input spellCheck={false}
           radius="none"
           id="input-2"
           label="Subheading"

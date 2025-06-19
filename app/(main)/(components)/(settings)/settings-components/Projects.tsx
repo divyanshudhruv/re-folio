@@ -218,7 +218,7 @@ export default function ProjectSetting({ id }: { id: string }) {
               {project.id}.
             </Text>
             <Column fillWidth>
-              <Input
+              <Input spellCheck={false}
                 id=""
                 radius="top"
                 label="Title"
@@ -233,13 +233,14 @@ export default function ProjectSetting({ id }: { id: string }) {
                 radius="none"
                 placeholder="Link to project"
                 height="m"
-                value={project.href}
+                value={project.href.replace("https://","")}
                 onChange={(e) =>
                   updateProject(project.id, "href", e.target.value)
                 }
                 hasPrefix={<Text className="text-big-darker">https://</Text>}
+                 spellCheck={false}
               />
-              <Input
+              <Input spellCheck={false}
                 id=""
                 radius="none"
                 label="Description"

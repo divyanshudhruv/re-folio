@@ -57,7 +57,7 @@ export default function AwardsSetting({ id }: { id: string }) {
     try {
       const { error } = await supabase
         .from("refolio_sections")
-        .update({ github_username: githubUsername })
+        .update({ github_username: githubUsername.trim() })
         .eq("id", id)
         .single();
 
@@ -83,7 +83,7 @@ export default function AwardsSetting({ id }: { id: string }) {
         </Text>
       </HeadingLink>
       <Column gap="16">
-        <Input
+        <Input spellCheck={false}
           id={`name-${id}`}
           label="Username"
           height="s"

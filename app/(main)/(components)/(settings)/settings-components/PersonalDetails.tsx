@@ -222,7 +222,8 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
         setUsernameMessages("");
       }
     } catch (err) {
-      console.error("Error changing username:", err);
+     setUsernameMessages("")
+     setUsernameMessagesError("Error changing username. Try again later.")
     }
   };
 
@@ -238,7 +239,7 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
         </Text>
       </HeadingLink>
       <Column>
-        <Input
+        <Input spellCheck={false}
           radius="top"
           id="input-1"
           label="Name"
@@ -246,7 +247,7 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
           value={personalDetails.name}
           onChange={(e) => handleChange("name", e.target.value)}
         />
-        <Input
+        <Input spellCheck={false}
           radius="none"
           id="input-username"
           placeholder="username"
@@ -259,7 +260,7 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
           description={usernameMessages}
           errorMessage={usernameMessagesError}
         />
-        <Input
+        <Input spellCheck={false}
           radius="none"
           id="input-2"
           label="Email"
@@ -267,7 +268,7 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
           value={personalDetails.email}
           onChange={(e) => handleChange("email", e.target.value)}
         />
-        <Input
+        <Input spellCheck={false}
           radius="none"
           id="input-3"
           label="Expertise"
