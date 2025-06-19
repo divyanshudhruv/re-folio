@@ -391,7 +391,7 @@ function LoginText() {
             </Text>
           </RevealFx>
           <Flex height={3}></Flex>{" "}
-          <RevealFx>
+          <RevealFx delay={2}>
             <Scroller maxWidth={32} fadeColor="transparent">
               <Row gap="12">
                 {scrollerUsers.map((user) => (
