@@ -93,7 +93,9 @@ export default function ExperienceSetting({ id }: { id: string }) {
 
       setExperiences((prev) =>
         prev.map((exp) =>
-          exp.id === experienceId ? { ...exp, src: publicUrlData.publicUrl } : exp
+          exp.id === experienceId
+            ? { ...exp, src: publicUrlData.publicUrl }
+            : exp
         )
       );
     } catch (error) {
@@ -116,7 +118,11 @@ export default function ExperienceSetting({ id }: { id: string }) {
     }
   };
 
-  const updateExperience = (id: number, field: keyof Experience, value: any) => {
+  const updateExperience = (
+    id: number,
+    field: keyof Experience,
+    value: any
+  ) => {
     setExperiences((prev) =>
       prev.map((exp) => (exp.id === id ? { ...exp, [field]: value } : exp))
     );
@@ -144,7 +150,12 @@ export default function ExperienceSetting({ id }: { id: string }) {
   };
 
   const renderExperienceRow = (experience: Experience) => (
-    <Row key={experience.id} gap="16" fillWidth id={`experience-row-${experience.id}`}>
+    <Row
+      key={experience.id}
+      gap="16"
+      fillWidth
+      id={`experience-row-${experience.id}`}
+    >
       <Text
         variant="heading-default-xs"
         onBackground="neutral-weak"
@@ -232,7 +243,7 @@ export default function ExperienceSetting({ id }: { id: string }) {
           <Button
             variant="secondary"
             onClick={addExperience}
-            disabled={experiences.length >= 5}
+            disabled={experiences.length >= 8}
           >
             Add
           </Button>

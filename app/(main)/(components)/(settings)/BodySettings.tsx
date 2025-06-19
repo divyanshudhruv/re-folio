@@ -18,6 +18,7 @@ import EducationSetting from "./settings-components/Education";
 import IntroductionSetting from "./settings-components/Introduction";
 import PasswordProtection from "./settings-components/PasswordProtection";
 import Footer from "../Footer";
+import Github from "./settings-components/Github";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -46,26 +47,38 @@ export default function BodySettings() {
     const components = [
       <PersonalDetailsSetting id={id!} />,
       <Space />,
-      <IntroductionSetting id={id!} />,      <Space />,
+      <IntroductionSetting id={id!} />,
+      <Space />,
 
-      <ExperienceSetting id={id!} />,      <Space />,
+      <ExperienceSetting id={id!} />,
+      <Space />,
 
-      <ProjectSetting id={id!} />,      <Space />,
+      <ProjectSetting id={id!} />,
+      <Space />,
 
-      <EducationSetting id={id!} />,      <Space />,
+      <Github id={id!} />,
+      <Space />,
 
-      <StackSetting id={id!} />,      <Space />,
+      <EducationSetting id={id!} />,
+      <Space />,
 
-      <CertificationSetting id={id!} />,      <Space />,
+      <StackSetting id={id!} />,
+      <Space />,
 
-      <AwardsSetting id={id!} />,      <Space />,
+      <CertificationSetting id={id!} />,
+      <Space />,
 
-      <LanguagesSetting id={id!} />,      <Space />,
+      <AwardsSetting id={id!} />,
+      <Space />,
 
-      <SummarySetting id={id!} />,      <Space />,
+      <LanguagesSetting id={id!} />,
+      <Space />,
 
-      <PasswordProtection id={id!} />,      <Space />,
+      <SummarySetting id={id!} />,
+      <Space />,
 
+      <PasswordProtection id={id!} />,
+      <Space />,
     ];
 
     return components.map((Component, index) => (
@@ -129,7 +142,7 @@ export default function BodySettings() {
         </Text>
 
         {!id && (
-          <Flex marginTop="16">
+          <Flex marginTop="16" data-theme="dark">
             <Button
               size="s"
               onClick={() => {

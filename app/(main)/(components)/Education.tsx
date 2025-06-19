@@ -62,6 +62,7 @@ const EducationCard: React.FC<EducationCardProps> = ({
       <Text
         variant="label-default-s"
         className={`${inter.className} text-big-darker`}
+        style={{lineHeight:"1.1rem"}}
       >
         {description}
       </Text>

@@ -37,3 +37,4 @@ next-env.d.ts
 
 # re-folio configuration
 /resources/re-folio.config.js
+/resources/github.config.js

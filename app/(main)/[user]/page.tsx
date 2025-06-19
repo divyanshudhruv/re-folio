@@ -24,6 +24,7 @@ import Awards from "../(components)/Awards";
 import Language from "../(components)/Languages";
 import Certifications from "../(components)/Certification";
 import Footer from "../(components)/Footer";
+import Github from "../(components)/Github";
 import { supabase } from "@/app/lib/supabase";
 import "./../global.css";
 
@@ -267,6 +268,7 @@ export default function Home() {
       <Intro id={username} />,
       <Experience id={username} />,
       <Projects id={username} />,
+      <Github id={username} />,
       <Education id={username} />,
       <Stack id={username} />,
       <Certifications id={username} />,
@@ -284,6 +286,7 @@ export default function Home() {
         fitHeight
         className="body-container"
         style={{ display: loading ? "none" : "flex" }}
+        data-theme="dark"
       >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
