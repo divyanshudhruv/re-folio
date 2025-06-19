@@ -35,6 +35,8 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
   const [usernameMessages, setUsernameMessages] = useState<string>("");
   const [usernameMessagesError, setUsernameMessagesError] =
     useState<string>("");
+  const [emailError, setEmailError] = useState<boolean>(false);
+  const [emailErrorMessage, setEmailErrorMessage] = useState<string>("");
 
   const fetchData = useCallback(async () => {
     try {
@@ -97,6 +99,26 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
   const handleSave = async () => {
     setLoading(true);
     try {
+      const { data: existingEmails, error: emailFetchError } = await supabase
+        .from("users")
+        .select("email, id");
+
+      if (emailFetchError) throw emailFetchError;
+
+      const isEmailTaken = (existingEmails ?? []).some(
+        (user) => user.email === personalDetails.email && user.id !== id
+      );
+
+      if (isEmailTaken) {
+        console.error("This email is already in use. Please use another.");
+        setEmailError(true);
+        setEmailErrorMessage(
+          "This email is already in use. Please use another."
+        );
+        setLoading(false);
+        return;
+      }
+
       await Promise.all([
         supabase
           .from("refolio_sections")
@@ -111,14 +133,12 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
           .update({ name: personalDetails.name })
           .eq("id", id),
         supabase.from("users").update({ username: username }).eq("id", id),
-        supabase
-          .from("users")
-          .update({ pfp: personalDetails.pfp })
-          .eq("id", id),
 
         changeUsername(username),
       ]);
       console.log("Personal details and avatar updated successfully");
+      setEmailError(false);
+      setEmailErrorMessage("");
     } catch (err) {
       console.error("Error saving data:", err);
     } finally {
@@ -188,7 +208,7 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
       const currentUser = existingUsernames.find((user) => user.id === id);
 
       if (currentUser?.username === usernameArgs) {
-        setUsernameMessages("Current username is already set. No worries!");
+        setUsernameMessages("");
         setUsernameConditions(false);
         setUsernameMessagesError("");
         return;
@@ -214,7 +234,6 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
         setUsernameMessages("Username updated successfully!");
         setUsernameMessagesError("");
         setUsernameConditions(false);
-        
       } else {
         setUsernameMessagesError(
           "You can only change your username once. Please contact support."
@@ -222,8 +241,8 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
         setUsernameMessages("");
       }
     } catch (err) {
-     setUsernameMessages("")
-     setUsernameMessagesError("Error changing username. Try again later.")
+      setUsernameMessages("");
+      setUsernameMessagesError("Error changing username. Try again later.");
     }
   };
 
@@ -239,7 +258,8 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
         </Text>
       </HeadingLink>
       <Column>
-        <Input spellCheck={false}
+        <Input
+          spellCheck={false}
           radius="top"
           id="input-1"
           label="Name"
@@ -247,7 +267,8 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
           value={personalDetails.name}
           onChange={(e) => handleChange("name", e.target.value)}
         />
-        <Input spellCheck={false}
+        <Input
+          spellCheck={false}
           radius="none"
           id="input-username"
           placeholder="username"
@@ -260,15 +281,19 @@ export default function PersonalDetailsSetting({ id }: { id: string }) {
           description={usernameMessages}
           errorMessage={usernameMessagesError}
         />
-        <Input spellCheck={false}
+        <Input
+          spellCheck={false}
           radius="none"
           id="input-2"
           label="Email"
           height="s"
           value={personalDetails.email}
           onChange={(e) => handleChange("email", e.target.value)}
+          error={emailError}
+          errorMessage={emailErrorMessage}
         />
-        <Input spellCheck={false}
+        <Input
+          spellCheck={false}
           radius="none"
           id="input-3"
           label="Expertise"
