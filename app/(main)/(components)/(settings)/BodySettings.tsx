@@ -17,6 +17,7 @@ import SummarySetting from "./settings-components/Summary";
 import EducationSetting from "./settings-components/Education";
 import IntroductionSetting from "./settings-components/Introduction";
 import PasswordProtection from "./settings-components/PasswordProtection";
+import PublishPermission from "./settings-components/Publish";
 import Footer from "../Footer";
 import Github from "./settings-components/Github";
 
@@ -78,6 +79,8 @@ export default function BodySettings() {
       <Space />,
 
       <PasswordProtection id={id!} />,
+      <Space />,
+      <PublishPermission id={id!} />,
       <Space />,
     ];
 
